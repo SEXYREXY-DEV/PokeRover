@@ -8,7 +8,7 @@ a = Analysis(
     ['pokemon_lookup.py'],
     pathex=[],
     binaries=[],
-    datas=[('../PBS', 'PBS')],
+    datas=[('../../PBS', 'PBS')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

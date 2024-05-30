@@ -34,7 +34,7 @@ Land,20
 #-------------------------------
 [197] # Aureyes Temple
 Land,20
-    20,GOLETT,14,17
+    20,GEODUDET,14,17
     20,VOLTORB,14,17
     20,BALTOY,14,17
     20,SHUCKLE,14,17

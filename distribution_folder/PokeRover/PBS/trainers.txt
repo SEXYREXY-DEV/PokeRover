@@ -7911,10 +7911,3 @@ Pokemon = LUNATONE,50
 Pokemon = QUAQUAVAL,50
 Pokemon = DELPHOX,50
 #-------------------------------
-[HORSE,Sleihesnire]
-LoseText = ...
-Pokemon = SLEIHESNIRE,52
-    Moves = WAVECRASH,HIGHHORSEPOWER,STOREDPOWER,LIFEDEW
-    Form = 1
-    IV = 31,31,31,31,31,31
-#-------------------------------

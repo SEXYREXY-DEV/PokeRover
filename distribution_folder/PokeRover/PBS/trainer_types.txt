@@ -864,9 +864,3 @@ Gender = Male
 BaseMoney = 0
 SkillLevel = 100
 BattleBGM = Battle Den
-#-------------------------------
-[HORSE]
-Name = Enraged Pokemon
-Gender = Male
-BaseMoney = 0
-SkillLevel = 100

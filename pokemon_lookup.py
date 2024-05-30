@@ -8,25 +8,16 @@ import pokedexcel
 # Data class because apparently globals are bad practice :(
 class PokemonData:
     def __init__(self, base_dir):
-        #workbook_path = 'pokedexCEL.xlsx'
         self.workbook_path = os.path.join('pokedexCEL.xlsx')
 
         # Dataframes but CLASSy
         dfs = pd.read_excel(self.workbook_path, sheet_name=None)
         self.dfs_cleaned = {name: df.where(pd.notnull(df), None) for name, df in dfs.items()}
         self.df_pokemon_details = self.dfs_cleaned['Main']
-        #df_pokemon_details = self.dfs_cleaned['Main']
-        #print(df_pokemon_details)
         self.df_moveset_details = self.dfs_cleaned['Moves']
         self.df_poke_info = self.dfs_cleaned['Poke Info']
         self.df_misc = self.dfs_cleaned['Misc']
 
-        # This is the base_dir for if you are using pyinstaller
-        #base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-        # There is no base_dir for running it locally
-
-        #self.regular_folder = os.path.join('Graphics', 'Pokemon', 'Front')
-        #self.shiny_folder = os.path.join('Graphics', 'Pokemon', 'Front Shiny')
         self.regular_folder = os.path.join(base_dir, 'Graphics', 'Pokemon', 'Front')
         self.shiny_folder = os.path.join(base_dir, 'Graphics', 'Pokemon', 'Front Shiny')
 
@@ -34,29 +25,18 @@ class PokemonData:
 class PokemonApp(tk.Tk):
     def __init__(self, data):
         super().__init__()
-        # Initialize data so it exists
         self.data = data
 
-        # Finally a good name
         self.title("PokéRover")
-
-        # Keep it small enough
         self.geometry("1280x720")
         self.minsize(1280, 720)
         self.maxsize(1280, 720)
 
-        # Testing size
-        #self.geometry("2560x1440")
-        #self.minsize(2560, 1440)
-        #self.maxsize(2560, 1440)
-
-        # Start with no mon and light mode
         self.current_mode = "light"
         self.colors = light_mode_colors
         self.configure(bg=self.colors["bg"])
         self.selected_pokemon = None
 
-        # Darkrai mode
         self.toggle_button = tk.Button(self, text="Dark Mode", command=self.toggle_mode, font=("Arial", 12))
         self.toggle_button.pack(pady=10)
 
@@ -116,11 +96,11 @@ class PokemonApp(tk.Tk):
         self.creator_frame = tk.Frame(self.notebook, bg='white')
         self.notebook.add(self.creator_frame, text='Credits')
         
-        # Creatr Label
+        # Creator Label
         self.creator_label = tk.Label(self.creator_frame, text="https://github.com/SEXYREXY-DEV   //////   sexyrexy1212 on discord", justify='left', anchor='nw', bg='white', font=("Arial", 12))
         self.creator_label.pack(pady=10, padx=10, fill='both', expand=True)
         
-        # Silly guy
+        # Add Tyrantrum Image
         self.add_tyrantrum_image()
 
     def search_pokemon(self):
@@ -140,7 +120,13 @@ class PokemonApp(tk.Tk):
             selected_text = self.result_listbox.get(selected_index)
             name_part = selected_text.split(' (')[0]
             internal_name_part = selected_text.split(' (')[1].strip(')')
-            self.selected_pokemon = self.data.df_pokemon_details[(self.data.df_pokemon_details['Name'] == name_part) & (self.data.df_pokemon_details['InternalName'] == internal_name_part)].iloc[0]
+            if internal_name_part == 'None':
+                self.selected_pokemon = self.data.df_pokemon_details[self.data.df_pokemon_details['Name'] == name_part].iloc[0]
+            else:
+                self.selected_pokemon = self.data.df_pokemon_details[
+                    (self.data.df_pokemon_details['Name'] == name_part) & 
+                    (self.data.df_pokemon_details['InternalName'] == internal_name_part)
+                ].iloc[0]
             details = "\n".join(f"{col}: {val}" for col, val in self.selected_pokemon.items() if col not in ['RegularImagePath', 'ShinyImagePath', 'GrowthRate', 'BaseEXP', 'Rareness'])
             self.detail_label.config(text=details) 
             self.update_image_options()
@@ -151,9 +137,13 @@ class PokemonApp(tk.Tk):
     def update_poke_info(self):
         if self.selected_pokemon is not None:
             poke_info = ""
-            if self.selected_pokemon['InternalName'] in self.data.df_poke_info['InternalName'].values:
-                poke_info_data = self.data.df_poke_info[self.data.df_poke_info['InternalName'] == self.selected_pokemon['InternalName']].iloc[0]
-                for col, val in poke_info_data.items():
+            if self.selected_pokemon['InternalName'] is None:
+                poke_info_data = self.data.df_poke_info[self.data.df_poke_info['Name'] == self.selected_pokemon['Name']]
+            else:
+                poke_info_data = self.data.df_poke_info[self.data.df_poke_info['InternalName'] == self.selected_pokemon['InternalName']]
+            
+            if not poke_info_data.empty:
+                for col, val in poke_info_data.iloc[0].items():
                     poke_info += f"{col}: {val}\n"
             else:
                 poke_info = "No Poke Info Available"
@@ -161,14 +151,17 @@ class PokemonApp(tk.Tk):
 
     def update_misc_info(self):
         if self.selected_pokemon is not None:
-            misc_info = ""  # Initialize misc_info string
-            if self.selected_pokemon['InternalName'] in self.data.df_misc['InternalName'].values:
-                misc_info_data = self.data.df_misc[self.data.df_misc['InternalName'] == self.selected_pokemon['InternalName']].iloc[0]
-                for col, val in misc_info_data.items():
+            misc_info = "" 
+            if self.selected_pokemon['InternalName'] is None:
+                misc_info_data = self.data.df_misc[self.data.df_misc['Name'] == self.selected_pokemon['Name']]
+            else:
+                misc_info_data = self.data.df_misc[self.data.df_misc['InternalName'] == self.selected_pokemon['InternalName']]
+            
+            if not misc_info_data.empty:
+                for col, val in misc_info_data.iloc[0].items():
                     misc_info += f"{col}: {val}\n"
             else:
                 misc_info = "No Misc Info Available"
-            # Update the misc_label with the formatted data
             self.misc_label.config(text=misc_info)
 
     def update_image_options(self):
@@ -180,7 +173,7 @@ class PokemonApp(tk.Tk):
 
     def update_image(self, event=None):
         if self.selected_pokemon is not None:
-            name = self.selected_pokemon['InternalName'].lower()
+            name = self.selected_pokemon['InternalName'] if self.selected_pokemon['InternalName'] is not None else self.selected_pokemon['Name'].lower()
             image_type = self.image_type_var.get()
             if image_type == 'Regular':
                 image_path = os.path.join(self.data.regular_folder, f"{name}.png")
@@ -202,12 +195,14 @@ class PokemonApp(tk.Tk):
 
     def update_moveset(self):
         if self.selected_pokemon is not None:
-            internal_name = self.selected_pokemon['InternalName']
-            moveset = self.data.df_moveset_details[self.data.df_moveset_details['InternalName'] == internal_name]
-            if internal_name == 'DARKRAI':
-                self.toggle_mode()
+            internal_name = self.selected_pokemon['InternalName'] if self.selected_pokemon['InternalName'] is not None else None
+            name = self.selected_pokemon['Name'] if internal_name is None else None
+            
+            if internal_name:
+                moveset = self.data.df_moveset_details[self.data.df_moveset_details['InternalName'] == internal_name]
             else:
-                pass
+                moveset = self.data.df_moveset_details[self.data.df_moveset_details['Name'] == name]
+                
             if not moveset.empty:
                 moves = moveset.iloc[0]['Moves'].split(',')
                 formatted_moves = "\n".join([f"{moves[i]} - {moves[i + 1]}" for i in range(0, len(moves), 2)])
@@ -298,14 +293,15 @@ dark_mode_colors = {
     "text_fg": "white"
 }
 
-
-
 def main():
     pokedexcel.main()
     
-    # Find base, possible change if using for different games
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    
+    # PROJECT PATH
+    #base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+    # pyinstaller
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
     # PokemonData!!
     data = PokemonData(base_dir)
     

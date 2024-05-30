@@ -693,7 +693,6 @@ Name = Kirba Desert
 Outdoor = true
 ShowArea = true
 Weather = Sun,100
-MapPosition = 1,22,4
 SnapEdges = true
 BattleBack = desert
 TrainerBattleBGM = Trainer Battle Southeast.ogg
@@ -741,7 +740,7 @@ Outdoor = true
 ShowArea = true
 MapPosition = 1,19,4
 SnapEdges = true
-BattleBack = forest4
+BattleBack = field
 TrainerBattleBGM = Trainer Battle Southeast.ogg
 #-------------------------------
 [182]   # Kirba Beachside
@@ -811,7 +810,6 @@ BattleBack = forest
 Name = Kuria Station
 Outdoor = true
 ShowArea = true
-MapPosition = 0,16,5
 Weather = Leaves,100
 SnapEdges = true
 BattleBack = field

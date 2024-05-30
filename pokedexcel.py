@@ -1,7 +1,6 @@
 from openpyxl import Workbook
 import os
 
-# Class contains everything needed to change pokemon.txt to xlsx
 class PokemonDataProcessor:
     def __init__(self, input_file, locations_file, output_file, ignore_list, key_order, moves_tab, poke_info_tab, misc_tab):
         self.input_file = input_file
@@ -15,7 +14,7 @@ class PokemonDataProcessor:
         self.all_data = []
         self.location_data = {}
 
-    # Split and process pokemon base file into Python dictionary    
+    # Split and process pokemon base file into Python data dictionary    
     def process_input_file(self):
         with open(self.input_file, 'r') as file:
             lines = file.readlines()
@@ -25,6 +24,8 @@ class PokemonDataProcessor:
             line = line.strip()
             if line == '#-------------------------------':
                 if data:
+                    if 'InternalName' not in data or data['InternalName'] is None:
+                        data['InternalName'] = data['Name'].upper()
                     self.all_data.append(data)
                     data = {}
             elif '=' in line:
@@ -34,10 +35,8 @@ class PokemonDataProcessor:
                 if key in self.ignore_list:
                     continue
                 if key == 'BaseStats':
-                    #print(stats)
                     stats = value.split(',')
                     data['HP'] = stats[0]
-                    #print(data['HP'])
                     data['Attack'] = stats[1]
                     data['Defense'] = stats[2]
                     data['Spd'] = stats[3]
@@ -56,17 +55,17 @@ class PokemonDataProcessor:
                     data[key] = value
         
         if data:
+            if 'InternalName' not in data or data['InternalName'] is None:
+                data['InternalName'] = data['Name'].upper()
             self.all_data.append(data)
-        #print(data)
 
-    # Split and process encounters file into Python dictionary 
+    # Split and process encounters file into Python data dictionary 
     def process_locations_file(self):
         with open(self.locations_file, 'r') as file:
             lines = file.readlines()
         
         current_location = None
         for line in lines:
-            #print(line)
             line = line.strip()
             if line.startswith('#'):
                 continue
@@ -76,19 +75,16 @@ class PokemonDataProcessor:
                 parts = line.split(',')
                 if len(parts) == 4:
                     _, name, level_start, level_end = parts
-                    #print(name, level_start, level_end)
                     level_range = f"{level_start}-{level_end}"
                     location_entry = f"{current_location}: {level_range}"
-                    #print(location_entry)
                     if name not in self.location_data:
                         self.location_data[name] = []
                     self.location_data[name].append(location_entry)
 
-    # locations
+    # Add location data to pokemon names
     def add_location_data(self):
         for entry in self.all_data:
             name = entry.get('InternalName', '')
-            #print(name)
             if name in self.location_data:
                 entry['Location Found'] = "; ".join(self.location_data[name])
             else:
@@ -108,12 +104,12 @@ class PokemonDataProcessor:
                 row = [entry.get(header, '') for header in headers]
                 ws.append(row)
         
-        # Build the different sheets based on orders
-        main_headers = ['InternalName'] + self.key_order if 'InternalName' not in self.key_order else self.key_order
+        # Build the different sheets based on orders below
+        main_headers = ['InternalName', 'Name'] + self.key_order if 'InternalName' not in self.key_order else self.key_order
         add_data_to_sheet("Main", self.all_data, main_headers)
-        add_data_to_sheet("Moves", self.all_data, ['InternalName'] + self.moves_tab)
-        add_data_to_sheet("Poke Info", self.all_data, ['InternalName'] + self.poke_info_tab)
-        add_data_to_sheet("Misc", self.all_data, ['InternalName'] + self.misc_tab)
+        add_data_to_sheet("Moves", self.all_data, ['InternalName', 'Name'] + self.moves_tab)
+        add_data_to_sheet("Poke Info", self.all_data, ['InternalName', 'Name'] + self.poke_info_tab)
+        add_data_to_sheet("Misc", self.all_data, ['InternalName', 'Name'] + self.misc_tab)
         
         if 'Sheet' in wb.sheetnames:
             del wb['Sheet']
@@ -127,17 +123,20 @@ class PokemonDataProcessor:
         self.add_location_data()
         self.create_workbook()
 
-# This is the base_dir for if you are using pyinstaller
-#base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+# Get the directory of the current script file
+#base_dir = os.path.dirname(os.path.abspath(__file__))
 
-# This is the base_dir if you are just running it locally
-base_dir = os.path.dirname(os.path.abspath(__file__))
+# For WORKING_PATH
+#base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# For pyinstaller
+base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Combine the directory path and the file name
 workbook_path = os.path.join(base_dir, 'PBS', 'pokemon.txt')
 encounter_path = os.path.join(base_dir, 'PBS', 'encounters.txt')
 
-# Configs, can change these however you like
+# Configuration
 input_file = workbook_path
 locations_file = encounter_path
 output_file = 'pokedexCEL.xlsx'

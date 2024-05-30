@@ -9841,19 +9841,6 @@ Flags = CanProtect
 EffectChance = 100
 Description = A bouquet filled with nightshades is thrown at the target, dealing damage and leaving a layer of toxic spikes.
 #-------------------------------
-[NIGHTSHADEBOUQUET]
-Name = Night Bouquet
-Type = POISON
-Category = Special
-Power = 75
-Accuracy = 90
-TotalPP = 15
-Target = NearOther
-FunctionCode = AddToxicSpikesToFoeSide
-Flags = CanProtect
-EffectChance = 100
-Description = A bouquet filled with nightshades is thrown at the target, dealing damage and leaving a layer of toxic spikes.
-#-------------------------------
 [TRIPLEWHIRLING]
 Name = Triple Whirling
 Type = PSYCHIC

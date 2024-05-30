@@ -8409,7 +8409,7 @@ BattlerEnemyX = 0
 BattlerEnemyY = 30
 BattlerShadowX = 0
 BattlerShadowSize = 2
-Evolutions = TYRANITAR,Item,ENIGMASTONE
+Evolutions = TYRANITAR,Level,60
 #-------------------------------
 [248]
 Name = Tyranitar
@@ -12667,7 +12667,7 @@ BattlerEnemyX = 0
 BattlerEnemyY = 28
 BattlerShadowX = 0
 BattlerShadowSize = 2
-Evolutions = SALAMENCE,Item,ENIGMASTONE
+Evolutions = SALAMENCE,Level,60
 #-------------------------------
 [373]
 Name = Salamence
@@ -15038,7 +15038,7 @@ BattlerEnemyX = 0
 BattlerEnemyY = 21
 BattlerShadowX = 0
 BattlerShadowSize = 2
-Evolutions = GARCHOMP,Item,ENIGMASTONE
+Evolutions = GARCHOMP,Level,48
 #-------------------------------
 [445]
 Name = Garchomp
@@ -23585,7 +23585,7 @@ BattlerEnemyX = 0
 BattlerEnemyY = 22
 BattlerShadowX = 0
 BattlerShadowSize = 2
-Evolutions = GOODRA,Item,ENIGMASTONE
+Evolutions = GOODRA,LevelRain,50
 #-------------------------------
 [706]
 Name = Goodra
@@ -26154,7 +26154,7 @@ BattlerEnemyX = 0
 BattlerEnemyY = 18
 BattlerShadowX = 0
 BattlerShadowSize = 2
-Evolutions = KOMMOO,Item,ENIGMASTONE
+Evolutions = KOMMOO,Level,45
 #-------------------------------
 [784]
 Name = Kommo-o
@@ -29459,7 +29459,7 @@ BattlerEnemyX = 0
 BattlerEnemyY = 21
 BattlerShadowX = 0
 BattlerShadowSize = 2
-Evolutions = DRAGAPULT,Item,ENIGMASTONE
+Evolutions = DRAGAPULT,Level,55
 #-------------------------------
 [887]
 Name = Dragapult
@@ -34031,7 +34031,7 @@ Habitat = Mountain
 Category = Ice Fin
 Pokedex = Arctibax freezes the air around it, protecting its face with an ice mask and turning its dorsal fin into a blade of ice.
 Generation = 9
-Evolutions = BAXCALIBUR,Item,ENIGMASTONE
+Evolutions = BAXCALIBUR,Level,54
 #-------------------------------
 [BAXCALIBUR]
 Name = Baxcalibur
@@ -34666,7 +34666,7 @@ BattlerEnemyX = 0
 BattlerEnemyY = 16
 BattlerShadowX = 0
 BattlerShadowSize = 2
-Evolutions = SYRENADE,Item,ENIGMASTONE
+Evolutions = SYRENADE,Level,55
 #-------------------------------
 [SYRENADE]
 Name = Syrenade
@@ -36545,8 +36545,8 @@ BattlerEnemyY = 26
 BattlerShadowX = 0
 BattlerShadowSize = 2
 #-------------------------------
-[SVETRIER]
-Name = Svetier
+Name = Svetrier
+InternalName = SVETRIER
 Type1 = PSYCHIC
 BaseStats = 80,65,110,55,130,110
 GenderRate = Genderless
@@ -36574,8 +36574,8 @@ BattlerEnemyY = 13
 BattlerShadowX = 0
 BattlerShadowSize = 2
 #-------------------------------
-[DRUKKNIR]
 Name = Drukknir
+InternalName = DRUKKNIR
 Type1 = WATER
 BaseStats = 80,130,70,100,65,105
 GenderRate = Genderless

@@ -1,5 +1,5 @@
-('C:\\Users\\tysha\\Downloads\\Project Vanguard Pre-Release '
- '3.0\\pokeRover\\build\\PokeRover\\PYZ-00.pyz',
+('D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
+ 'Pre-Release 3.0\\pokeRover\\Dist\\build\\PokeRover\\PYZ-00.pyz',
  [('PIL',
    'C:\\Users\\tysha\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python310\\site-packages\\PIL\\__init__.py',
    'PYMODULE'),
@@ -3269,8 +3269,8 @@
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.10_3.10.3056.0_x64__qbz5n2kfra8p0\\lib\\plistlib.py',
    'PYMODULE'),
   ('pokedexcel',
-   'C:\\Users\\tysha\\Downloads\\Project Vanguard Pre-Release '
-   '3.0\\pokeRover\\pokedexcel.py',
+   'D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
+   'Pre-Release 3.0\\pokeRover\\Dist\\pokedexcel.py',
    'PYMODULE'),
   ('pprint',
    'C:\\Program '
