@@ -20,7 +20,11 @@ class PokemonData:
         self.df_moveset_details = self.dfs_cleaned['Moves']
         self.df_poke_info = self.dfs_cleaned['Poke Info']
         self.df_misc = self.dfs_cleaned['Misc']
-        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+        # This is the base_dir for if you are using pyinstaller
+        #base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+        # There is no base_dir for running it locally
+
         #self.regular_folder = os.path.join('Graphics', 'Pokemon', 'Front')
         #self.shiny_folder = os.path.join('Graphics', 'Pokemon', 'Front Shiny')
         self.regular_folder = os.path.join(base_dir, 'Graphics', 'Pokemon', 'Front')

@@ -83,6 +83,8 @@ class PokemonApp(tk.Tk):
         self.notebook.add(self.details_frame, text='Details')
         self.detail_label = tk.Label(self.details_frame, text="", justify='left', anchor='nw', bg='white', font=("Arial", 12))
         self.detail_label.pack(pady=10, padx=10, fill='both', expand=True)
+
+        # Image Frame
         self.image_label = tk.Label(self.details_frame, bg='white')
         self.image_label.pack(pady=10, padx=10)
         self.image_type_var = tk.StringVar(value='Regular')
@@ -119,9 +121,12 @@ class PokemonApp(tk.Tk):
         # Silly guy
         self.add_tyrantrum_image()
 
+    # Find the pokemon from search provided by user
     def search_pokemon(self):
         query = self.search_entry.get().strip().lower()
         results = self.data.df_pokemon_details[self.data.df_pokemon_details['Name'].str.lower().str.contains(query)]
+
+        # This probably shouldn't throw an error like this but oh well
         if results.empty:
             messagebox.showerror("Error", "No Pokemon found with that name.")
         else:
@@ -130,20 +135,26 @@ class PokemonApp(tk.Tk):
                 display_name = f"{row['Name']} ({row['InternalName']})"
                 self.result_listbox.insert(tk.END, display_name)
 
+    # The big display everything
     def show_details(self, event):
         selected_index = self.result_listbox.curselection()
         if selected_index:
             selected_text = self.result_listbox.get(selected_index)
+            #print(selected_text)
             name_part = selected_text.split(' (')[0]
             internal_name_part = selected_text.split(' (')[1].strip(')')
+            # This one was annoying to get the right syntax
             self.selected_pokemon = self.data.df_pokemon_details[(self.data.df_pokemon_details['Name'] == name_part) & (self.data.df_pokemon_details['InternalName'] == internal_name_part)].iloc[0]
+            #print(self.selected_pokemon)
             details = "\n".join(f"{col}: {val}" for col, val in self.selected_pokemon.items() if col not in ['RegularImagePath', 'ShinyImagePath', 'GrowthRate', 'BaseEXP', 'Rareness'])
             self.detail_label.config(text=details) 
+            # Run all the functions that update info if they need to
             self.update_image_options()
             self.update_moveset()
             self.update_poke_info()
             self.update_misc_info()
 
+    # Update the pokemon info (in show_details)
     def update_poke_info(self):
         if self.selected_pokemon is not None:
             poke_info = ""
@@ -155,6 +166,7 @@ class PokemonApp(tk.Tk):
                 poke_info = "No Poke Info Available"
             self.poke_info_label.config(text=poke_info)
 
+    # Update the misc info (in show_details)
     def update_misc_info(self):
         if self.selected_pokemon is not None:
             misc_info = ""  # Initialize misc_info string
@@ -167,6 +179,7 @@ class PokemonApp(tk.Tk):
             # Update the misc_label with the formatted data
             self.misc_label.config(text=misc_info)
 
+    # Update shiny or regular (in show_details)
     def update_image_options(self):
         if self.selected_pokemon is not None:
             image_options = ['Regular', 'Shiny']
@@ -174,6 +187,8 @@ class PokemonApp(tk.Tk):
             self.image_type_menu.current(0)
             self.update_image()
 
+    # Update the image when new selection (in update_image_options)
+    # Does a search based on InternalName to get the correct pngs
     def update_image(self, event=None):
         if self.selected_pokemon is not None:
             name = self.selected_pokemon['InternalName'].lower()
@@ -196,6 +211,9 @@ class PokemonApp(tk.Tk):
             else:
                 self.image_label.config(image='', text='No Image Available')
 
+    # Update the moveset for each selection (in show_details)
+    # This one should evenmtually be split into more than one method
+    # Too much data processing along with displaying
     def update_moveset(self):
         if self.selected_pokemon is not None:
             internal_name = self.selected_pokemon['InternalName']
@@ -223,6 +241,7 @@ class PokemonApp(tk.Tk):
                 self.moves_text.delete('1.0', tk.END)
                 self.moves_text.insert(tk.END, "No Moves Available")
 
+    # Change the dark or light mode
     def toggle_mode(self):
         if self.current_mode == "light":
             self.colors = dark_mode_colors
@@ -233,6 +252,7 @@ class PokemonApp(tk.Tk):
         
         self.apply_color_scheme()
 
+    # Apply the change of dark or light
     def apply_color_scheme(self):
         self.configure(bg=self.colors["bg"])
         self.left_pane.configure(bg=self.colors["bg"])
@@ -251,6 +271,7 @@ class PokemonApp(tk.Tk):
         self.misc_frame.configure(bg=self.colors["bg"])
         self.misc_label.configure(bg=self.colors["bg"], fg=self.colors["fg"])
 
+    # Hehe funny guy
     def add_tyrantrum_image(self):
         try:
             # Load the image from the shiny folder
@@ -267,7 +288,7 @@ class PokemonApp(tk.Tk):
             print(f"Error loading Tyrantrum image: {e}")
 
 
-
+# Base values for colors
 light_mode_colors = {
     "bg": "white",
     "fg": "black",
