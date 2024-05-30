@@ -1,6 +1,6 @@
 # PokéRover
 
-PokéRover is a Python-based application for browsing Pokémon data. It allows users to search for Pokémon by name, view details about each Pokémon, and explore their moves, abilities, and other information.
+PokéRover is a Python-based application for browsing Pokémon essentials data. It allows users to search for Pokémon by name, view details about each Pokémon, and explore their moves, abilities, and other information.
 
 ## HOW TO
  
