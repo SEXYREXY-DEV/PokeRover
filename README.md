@@ -56,4 +56,4 @@ Once the application is running, follow these steps to use it:
 Contributions are welcome! If you find any bugs or have suggestions for improvements, please feel free to message me on Discord, do your own pull requests, or raise an issue!
 
 ## For devs
-- The only thing that needs to be changed is possibly the format of PBS files
+- The only thing that should need to be changed is the format of PBS files unless it's a real old version I don't know anyting about
