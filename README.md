@@ -6,7 +6,7 @@ PokéRover is a Python-based application for browsing Pokémon data. It allows u
  
 Two possible ways to use PokeRover.
 
-1. Clone or download the __distribution_folder__ , place it like this ![Folder Location](PokeRover_Pics/app2.PNG) into the main folder of the game. After you place it there just find __PokeRover.exe__ that is inside of the __PokeRover__ folder within __distribution_folder__
+1. Clone or download the __distribution_folder__ , place it like this ![Folder Location](PokeRover_Pics/app1.PNG) into the main folder of the game. After you place it there just find __PokeRover.exe__ that is inside of the __PokeRover__ folder within __distribution_folder__
 
 2. Download the two Python scripts __pokedexcel.py__ and __pokemon_lookup.py__. In pokedexcel and lookup there might be some changes to paths that need to be made to run them but they should just run if they're in a folder within the main game folder. You will have to alter paths if they are free floating in the main game folder.
 
