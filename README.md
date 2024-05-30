@@ -1,14 +1,16 @@
 # PokéRover
 
-PokéRover is a Python-based application for browsing Pokémon data. It allows users to search for Pokémon by name, view details about each Pokémon, and explore their moves, abilities, and other information.
+PokéRover is a Python-based application for browsing Pokémon essentials data. It allows users to search for Pokémon by name, view details about each Pokémon, and explore their moves, abilities, and other information.
 
 ## HOW TO
  
-Two possible ways to use PokeRover.
+Three possible ways to use PokeRover (in order of how I'd recommend to use it)
 
-1. Clone or download the __distribution_folder__ , place it like this ![Folder Location](PokeRover_Pics/app_1.PNG) into the main folder of the game. After you place it there just find __PokeRover.exe__ that is inside of the __PokeRover__ folder within __distribution_folder__
+1. Click __dist.zip__ and in the top right hit the three dots and then download. Place it in the same folder as the main game (same place as the picture below) and using whatever program you used to extract the main game to press '__extract here__' . DO NOT EXTRACT ANYWHERE ELSE, due to the nature of the program, it needs to have the file structure that is setup by default. If you extract to a new folder or anything like that, the app will not work.
 
-2. Download the two Python scripts __pokedexcel.py__ and __pokemon_lookup.py__. In pokedexcel and lookup there might be some changes to paths that need to be made to run them but they should just run if they're in a folder within the main game folder. You will have to alter paths if they are free floating in the main game folder.
+2. Clone or download the __distribution_folder__ , place it like this ![Folder Location](PokeRover_Pics/app_1.PNG) into the main folder of the game. After you place it there just find __PokeRover.exe__ that is inside of the __PokeRover__ folder within __distribution_folder__
+
+3. Download the two Python scripts __pokedexcel.py__ and __pokemon_lookup.py__. In pokedexcel and lookup there might be some changes to paths that need to be made to run them but they should just run if they're in a folder within the main game folder. You will have to alter paths if they are free floating in the main game folder.
 
 ## Features
 
