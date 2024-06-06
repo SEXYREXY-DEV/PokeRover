@@ -2,6 +2,13 @@
 
 PokéRover is a Python-based application for browsing Pokémon essentials data. It allows users to search for Pokémon by name, view details about each Pokémon, and explore their moves, abilities, and other information.
 
+## For other games
+
+- For anyone who wants to use Pokerover for other fangames
+1. download it from the github like normal(could possibly need a converter mod depending on Essentials version, most devs will be able to tell so just ask your dev)
+2. find the PBS Files, relocate the PBS files
+3. overwrite the PBS in "dist/PokeRover/PBS" and run the .exe
+
 ## HOW TO
  
 Three possible ways to use PokeRover (in order of how I'd recommend to use it)
@@ -47,3 +54,6 @@ Once the application is running, follow these steps to use it:
 ## Contributing
 
 Contributions are welcome! If you find any bugs or have suggestions for improvements, please feel free to message me on Discord, do your own pull requests, or raise an issue!
+
+## For devs
+- The only thing that should need to be changed is the format of PBS files unless it's a real old version I don't know anyting about
