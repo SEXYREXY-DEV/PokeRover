@@ -1,5 +1,5 @@
 ('D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
- 'Pre-Release 3.0\\pokeRover\\Dist\\build\\PokeRover\\PokeRover.exe',
+ 'Pre-Release 3.0\\PokeRover\\dist\\build\\PokeRover\\PokeRover.exe',
  False,
  False,
  True,
@@ -15,34 +15,34 @@
  None,
  None,
  'D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
- 'Pre-Release 3.0\\pokeRover\\Dist\\build\\PokeRover\\PokeRover.pkg',
+ 'Pre-Release 3.0\\PokeRover\\dist\\build\\PokeRover\\PokeRover.pkg',
  [('PYZ-00.pyz',
    'D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
-   'Pre-Release 3.0\\pokeRover\\Dist\\build\\PokeRover\\PYZ-00.pyz',
+   'Pre-Release 3.0\\PokeRover\\dist\\build\\PokeRover\\PYZ-00.pyz',
    'PYZ'),
   ('struct',
    'D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
-   'Pre-Release 3.0\\pokeRover\\Dist\\build\\PokeRover\\localpycs\\struct.pyc',
+   'Pre-Release 3.0\\PokeRover\\dist\\build\\PokeRover\\localpycs\\struct.pyc',
    'PYMODULE'),
   ('pyimod01_archive',
    'D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
    'Pre-Release '
-   '3.0\\pokeRover\\Dist\\build\\PokeRover\\localpycs\\pyimod01_archive.pyc',
+   '3.0\\PokeRover\\dist\\build\\PokeRover\\localpycs\\pyimod01_archive.pyc',
    'PYMODULE'),
   ('pyimod02_importers',
    'D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
    'Pre-Release '
-   '3.0\\pokeRover\\Dist\\build\\PokeRover\\localpycs\\pyimod02_importers.pyc',
+   '3.0\\PokeRover\\dist\\build\\PokeRover\\localpycs\\pyimod02_importers.pyc',
    'PYMODULE'),
   ('pyimod03_ctypes',
    'D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
    'Pre-Release '
-   '3.0\\pokeRover\\Dist\\build\\PokeRover\\localpycs\\pyimod03_ctypes.pyc',
+   '3.0\\PokeRover\\dist\\build\\PokeRover\\localpycs\\pyimod03_ctypes.pyc',
    'PYMODULE'),
   ('pyimod04_pywin32',
    'D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
    'Pre-Release '
-   '3.0\\pokeRover\\Dist\\build\\PokeRover\\localpycs\\pyimod04_pywin32.pyc',
+   '3.0\\PokeRover\\dist\\build\\PokeRover\\localpycs\\pyimod04_pywin32.pyc',
    'PYMODULE'),
   ('pyiboot01_bootstrap',
    'C:\\Users\\tysha\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python310\\site-packages\\PyInstaller\\loader\\pyiboot01_bootstrap.py',
@@ -81,7 +81,7 @@
  [],
  False,
  False,
- 1717091500,
+ 1717693987,
  [('runw.exe',
    'C:\\Users\\tysha\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python310\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\runw.exe',
    'EXECUTABLE')])

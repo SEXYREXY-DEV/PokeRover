@@ -1,5 +1,7 @@
 from openpyxl import Workbook
 import os
+import datetime
+import pandas as pd
 
 class PokemonDataProcessor:
     def __init__(self, input_file, locations_file, output_file, ignore_list, key_order, moves_tab, poke_info_tab, misc_tab):
@@ -32,9 +34,11 @@ class PokemonDataProcessor:
                 key, value = line.split('=', 1)
                 key = key.strip()
                 value = value.strip()
-                if key in self.ignore_list:
+                #print(key)
+                if key in self.ignore_list and not 'Types':
                     continue
                 if key == 'BaseStats':
+                    #print('BaseStats')
                     stats = value.split(',')
                     data['HP'] = stats[0]
                     data['Attack'] = stats[1]
@@ -42,15 +46,19 @@ class PokemonDataProcessor:
                     data['Spd'] = stats[3]
                     data['SpAtk'] = stats[4]
                     data['SpDef'] = stats[5]
-                elif key == 'HiddenAbilities':
+                if key == 'HiddenAbility':
+                    #print('HiddenAbility')
                     abilities = value.split(',')
                     for ability in abilities:
                         data['HiddenAbility'] = ability
-                elif key == 'Types':
+                if key == 'Types':
+                    #print('Types')
                     types = value.split(',')
                     data['Type1'] = types[0]
                     if len(types) > 1:
                         data['Type2'] = types[1]
+                    else:
+                        data['Type2'] = None
                 else:
                     data[key] = value
         
@@ -116,21 +124,55 @@ class PokemonDataProcessor:
         
         wb.save(self.output_file)
 
+    # Check if the Excel sheet exists and has all required columns
+    def check_excel_sheet(self):
+        if not os.path.exists(self.output_file):
+            return False
+        
+        required_columns = ['Name', 'InternalName', 'FormName', 'Type1', 'Type2', 'HP', 'Attack', 'Defense', 'SpAtk', 'SpDef', 'Spd', 'Abilities', 'HiddenAbility', 'Evolutions', 'Location Found', 'Evolution Line']
+        
+        try:
+            df = pd.read_excel(self.output_file, sheet_name="Main")
+            columns = df.columns.tolist()
+            print(columns)
+            
+            if set(required_columns).issubset(set(columns)):
+                return True
+            else:
+                print('fail')
+                return False
+                
+        except Exception as e:
+            #print(f"An error occurred while checking Excel sheet: {e}")
+            return False
+    
+    # Check if the Excel sheet was created in the last 2 days
+    def check_excel_creation_date(self):
+        if os.path.exists(self.output_file):
+            creation_time = datetime.datetime.fromtimestamp(os.path.getctime(self.output_file))
+            current_time = datetime.datetime.now()
+            if (current_time - creation_time).days <= 2:
+                print('pass')
+                return True
+        return False
+
     # Run all functions
     def run(self):
-        self.process_input_file()
-        self.process_locations_file()
-        self.add_location_data()
-        self.create_workbook()
+        if self.check_excel_sheet() and self.check_excel_creation_date():
+            pass
+        else:
+            self.process_input_file()
+            self.process_locations_file()
+            self.add_location_data()
+            self.create_workbook()
 
 # Get the directory of the current script file
 #base_dir = os.path.dirname(os.path.abspath(__file__))
 
 # For WORKING_PATH
-#base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# For pyinstaller
 base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# For pyinstaller
+#base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Combine the directory path and the file name
 workbook_path = os.path.join(base_dir, 'PBS', 'pokemon.txt')
@@ -151,3 +193,5 @@ processor = PokemonDataProcessor(input_file, locations_file, output_file, ignore
 
 def main():
     processor.run()
+
+main()

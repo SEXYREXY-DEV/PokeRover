@@ -4,12 +4,16 @@ from tkinter import ttk, messagebox, scrolledtext
 from PIL import Image, ImageTk
 import pandas as pd
 import pokedexcel
+import evos
+from text_methods import TextWrapper
 
 # Data class because apparently globals are bad practice :(
 class PokemonData:
     def __init__(self, base_dir):
         self.workbook_path = os.path.join('pokedexCEL.xlsx')
-
+        pokedex = evos.Evolution(self.workbook_path)
+        evos_dict = pokedex.generate_evolution_dict()
+        pokedex.update_spreadsheet(evos_dict)
         # Dataframes but CLASSy
         dfs = pd.read_excel(self.workbook_path, sheet_name=None)
         self.dfs_cleaned = {name: df.where(pd.notnull(df), None) for name, df in dfs.items()}
@@ -21,7 +25,7 @@ class PokemonData:
         self.regular_folder = os.path.join(base_dir, 'Graphics', 'Pokemon', 'Front')
         self.shiny_folder = os.path.join(base_dir, 'Graphics', 'Pokemon', 'Front Shiny')
 
-# App class so loopity loop
+
 class PokemonApp(tk.Tk):
     def __init__(self, data):
         super().__init__()
@@ -65,8 +69,8 @@ class PokemonApp(tk.Tk):
         # Details Frame
         self.details_frame = tk.Frame(self.notebook, bg='white')
         self.notebook.add(self.details_frame, text='Details')
-        self.detail_label = tk.Label(self.details_frame, text="", justify='left', anchor='nw', bg='white', font=("Arial", 12))
-        self.detail_label.pack(pady=10, padx=10, fill='both', expand=True)
+        self.details_text = scrolledtext.ScrolledText(self.details_frame, wrap=tk.WORD, font=("Arial", 12), bg='white', height=15, width=70)
+        self.details_text.pack(pady=10, padx=10, fill='both', expand=True)
         self.image_label = tk.Label(self.details_frame, bg='white')
         self.image_label.pack(pady=10, padx=10)
         self.image_type_var = tk.StringVar(value='Regular')
@@ -92,15 +96,23 @@ class PokemonApp(tk.Tk):
         self.misc_label = tk.Label(self.misc_frame, text="", justify='left', anchor='nw', bg='white', font=("Arial", 12))
         self.misc_label.pack(pady=10, padx=10, fill='both', expand=True)
 
+        # Evos Frame
+        self.evos_frame = tk.Frame(self.notebook, bg='white')
+        self.notebook.add(self.evos_frame, text='Evos')
+        self.evos_canvas = tk.Canvas(self.evos_frame, bg='white')
+        self.evos_canvas.pack(side='left', fill='both', expand=True)
+        self.evos_scrollbar = tk.Scrollbar(self.evos_frame, orient='vertical', command=self.evos_canvas.yview)
+        self.evos_scrollbar.pack(side='right', fill='y')
+        self.evos_canvas.configure(yscrollcommand=self.evos_scrollbar.set)
+        self.evos_inner_frame = tk.Frame(self.evos_canvas, bg='white')
+        self.evos_canvas.create_window((0, 0), window=self.evos_inner_frame, anchor='nw')
+        self.evos_inner_frame.bind('<Configure>', lambda event, canvas=self.evos_canvas: self.on_frame_configure(canvas))
+
         # Creator Frame
         self.creator_frame = tk.Frame(self.notebook, bg='white')
         self.notebook.add(self.creator_frame, text='Credits')
-        
-        # Creator Label
         self.creator_label = tk.Label(self.creator_frame, text="https://github.com/SEXYREXY-DEV   //////   sexyrexy1212 on discord", justify='left', anchor='nw', bg='white', font=("Arial", 12))
         self.creator_label.pack(pady=10, padx=10, fill='both', expand=True)
-        
-        # Add Tyrantrum Image
         self.add_tyrantrum_image()
 
     def search_pokemon(self):
@@ -110,7 +122,8 @@ class PokemonApp(tk.Tk):
             messagebox.showerror("Error", "No Pokemon found with that name.")
         else:
             self.result_listbox.delete(0, tk.END)
-            for index, row in results.iterrows():
+            unique_results = results.drop_duplicates(subset=['Name'])
+            for index, row in unique_results.iterrows():
                 display_name = f"{row['Name']} ({row['InternalName']})"
                 self.result_listbox.insert(tk.END, display_name)
 
@@ -127,12 +140,39 @@ class PokemonApp(tk.Tk):
                     (self.data.df_pokemon_details['Name'] == name_part) & 
                     (self.data.df_pokemon_details['InternalName'] == internal_name_part)
                 ].iloc[0]
-            details = "\n".join(f"{col}: {val}" for col, val in self.selected_pokemon.items() if col not in ['RegularImagePath', 'ShinyImagePath', 'GrowthRate', 'BaseEXP', 'Rareness'])
-            self.detail_label.config(text=details) 
+            details = "\n".join(f"{col}: {TextWrapper.wrap_text(str(val), 80)}" for col, val in self.selected_pokemon.items() if col not in ['RegularImagePath', 'ShinyImagePath', 'GrowthRate', 'BaseEXP', 'Rareness'])
+            self.details_text.delete('1.0', tk.END)
+            self.details_text.insert(tk.END, details)
             self.update_image_options()
             self.update_moveset()
             self.update_poke_info()
             self.update_misc_info()
+            self.update_evos()  # Add this line to update the evolutions tab
+            self.notebook.select(self.evos_frame)  # Switch to the "Evos" tab
+
+    def update_evos(self):
+        if self.selected_pokemon is not None:
+            #print(self.selected_pokemon)
+            evos = self.selected_pokemon['Evolution Line'].split(', ')
+            for evo in evos:
+                evo_name = evo.split('(')[0].strip()
+                evo_image_path = os.path.join(self.data.regular_folder, f"{evo_name}.png")
+                if os.path.exists(evo_image_path):
+                    evo_image = Image.open(evo_image_path)
+                    evo_image = evo_image.resize((100, 100), Image.LANCZOS)
+                    evo_photo = ImageTk.PhotoImage(evo_image)
+                    evo_label = tk.Label(self.evos_inner_frame, image=evo_photo, bg='white')
+                    evo_label.image = evo_photo
+                    evo_label.pack(padx=10, pady=5, side='top', anchor='w')
+                    
+                    evo_name_label = tk.Label(self.evos_inner_frame, text=evo, bg='white', font=("Arial", 12))
+                    evo_name_label.pack(padx=10, pady=5, side='top', anchor='w')
+                else:
+                    evo_name_label = tk.Label(self.evos_inner_frame, text=evo, bg='white', font=("Arial", 12))
+                    evo_name_label.pack(padx=10, pady=5, side='top', anchor='w')
+
+    def on_frame_configure(self, canvas):
+        canvas.configure(scrollregion=canvas.bbox('all'))
 
     def update_poke_info(self):
         if self.selected_pokemon is not None:
@@ -144,7 +184,8 @@ class PokemonApp(tk.Tk):
             
             if not poke_info_data.empty:
                 for col, val in poke_info_data.iloc[0].items():
-                    poke_info += f"{col}: {val}\n"
+                    wrapped_val = TextWrapper.wrap_text(str(val), 100)  # Adjust the width as needed
+                    poke_info += f"{col}: {wrapped_val}\n"
             else:
                 poke_info = "No Poke Info Available"
             self.poke_info_label.config(text=poke_info)
@@ -159,7 +200,8 @@ class PokemonApp(tk.Tk):
             
             if not misc_info_data.empty:
                 for col, val in misc_info_data.iloc[0].items():
-                    misc_info += f"{col}: {val}\n"
+                    wrapped_val = TextWrapper.wrap_text(str(val), 100)  # Adjust the width as needed
+                    misc_info += f"{col}: {wrapped_val}\n"
             else:
                 misc_info = "No Misc Info Available"
             self.misc_label.config(text=misc_info)
@@ -241,7 +283,7 @@ class PokemonApp(tk.Tk):
         self.result_listbox.configure(bg=self.colors["listbox_bg"], fg=self.colors["listbox_fg"])
         self.right_pane.configure(bg=self.colors["bg"])
         self.details_frame.configure(bg=self.colors["bg"])
-        self.detail_label.configure(bg=self.colors["bg"], fg=self.colors["fg"])
+        self.details_text.configure(bg=self.colors["text_bg"], fg=self.colors["text_fg"])  # Updated line
         self.image_label.configure(bg=self.colors["bg"])
         self.moves_frame.configure(bg=self.colors["bg"])
         self.moves_text.configure(bg=self.colors["text_bg"], fg=self.colors["text_fg"])
@@ -249,6 +291,11 @@ class PokemonApp(tk.Tk):
         self.poke_info_label.configure(bg=self.colors["bg"], fg=self.colors["fg"])
         self.misc_frame.configure(bg=self.colors["bg"])
         self.misc_label.configure(bg=self.colors["bg"], fg=self.colors["fg"])
+        self.evos_frame.configure(bg=self.colors["bg"])
+        self.evos_canvas.configure(bg=self.colors["bg"])
+        self.evos_inner_frame.configure(bg=self.colors["bg"])
+
+
 
     def add_tyrantrum_image(self):
         try:
@@ -297,14 +344,12 @@ def main():
     pokedexcel.main()
     
     # PROJECT PATH
-    #base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-    # pyinstaller
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    # pyinstaller
+    #base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
     # PokemonData!!
     data = PokemonData(base_dir)
-    
     # Appdata finally (I forgot to put this in and had to troubleshoot with chatgpt :(   )
     app = PokemonApp(data)
     app.mainloop()
