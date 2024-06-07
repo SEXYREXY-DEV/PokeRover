@@ -194,4 +194,4 @@ processor = PokemonDataProcessor(input_file, locations_file, output_file, ignore
 def main():
     processor.run()
 
-main()
+#main()
