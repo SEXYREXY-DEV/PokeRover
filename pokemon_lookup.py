@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, scrolledtext
 from PIL import Image, ImageTk
 import pandas as pd
-import pokedexcel_test
+import pokedexcel
 import evos
 from text_methods import TextWrapper
 
@@ -386,7 +386,7 @@ dark_mode_colors = {
 }
 
 def main():
-    pokedexcel_test.main()
+    pokedexcel.main()
     
     # PROJECT PATH
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
