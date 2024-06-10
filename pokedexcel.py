@@ -20,7 +20,7 @@ class PokemonDataProcessor:
     def process_input_file(self):
         with open(self.input_file, 'r') as file:
             lines = file.readlines()
-        
+
         data = {}
         for line in lines:
             line = line.strip()
@@ -28,17 +28,18 @@ class PokemonDataProcessor:
                 if data:
                     if 'InternalName' not in data or data['InternalName'] is None:
                         data['InternalName'] = data['Name'].upper()
+                    data['UniqueID'] = f"{data['Name']}_{data['InternalName']}"  # Generate UniqueID
                     self.all_data.append(data)
                     data = {}
             elif '=' in line:
                 key, value = line.split('=', 1)
                 key = key.strip()
                 value = value.strip()
-                #print(key)
+                # print(key)
                 if key in self.ignore_list and not 'Types':
                     continue
                 if key == 'BaseStats':
-                    #print('BaseStats')
+                    # print('BaseStats')
                     stats = value.split(',')
                     data['HP'] = stats[0]
                     data['Attack'] = stats[1]
@@ -47,12 +48,12 @@ class PokemonDataProcessor:
                     data['SpAtk'] = stats[4]
                     data['SpDef'] = stats[5]
                 if key == 'HiddenAbility':
-                    #print('HiddenAbility')
+                    # print('HiddenAbility')
                     abilities = value.split(',')
                     for ability in abilities:
                         data['HiddenAbility'] = ability
                 if key == 'Types':
-                    #print('Types')
+                    # print('Types')
                     types = value.split(',')
                     data['Type1'] = types[0]
                     if len(types) > 1:
@@ -61,11 +62,21 @@ class PokemonDataProcessor:
                         data['Type2'] = None
                 else:
                     data[key] = value
-        
+
         if data:
             if 'InternalName' not in data or data['InternalName'] is None:
                 data['InternalName'] = data['Name'].upper()
+            data['UniqueID'] = f"{data['Name']}_{data['InternalName']}"
+
+            # Check if InternalName is EEVEE and update Evolutions field
+            if data.get('InternalName') == 'EEVEE':
+                if 'Evolutions' in data:
+                    data['Evolutions'] += '(32)'
+                else:
+                    data['Evolutions'] = '(32)'
+
             self.all_data.append(data)
+
 
     # Split and process encounters file into Python data dictionary 
     def process_locations_file(self):
@@ -115,6 +126,7 @@ class PokemonDataProcessor:
         # Build the different sheets based on orders below
         main_headers = ['InternalName', 'Name'] + self.key_order if 'InternalName' not in self.key_order else self.key_order
         add_data_to_sheet("Main", self.all_data, main_headers)
+        print('adding to main')
         add_data_to_sheet("Moves", self.all_data, ['InternalName', 'Name'] + self.moves_tab)
         add_data_to_sheet("Poke Info", self.all_data, ['InternalName', 'Name'] + self.poke_info_tab)
         add_data_to_sheet("Misc", self.all_data, ['InternalName', 'Name'] + self.misc_tab)
@@ -183,9 +195,9 @@ input_file = workbook_path
 locations_file = encounter_path
 output_file = 'pokedexCEL.xlsx'
 ignore_list = ['BaseExp', 'BattlerEnemyX', 'BattlerEnemyY', 'BattlerPlayerX', 'BattlerPlayerY', 'BattlerShadowSize', 'BattlerShadowX', 'CatchRate', 'Types', 'Category', 'EggGroups', 'HatchSteps', 'EVs', 'EffortPoints', 'HiddenAbilities']
-key_order = ['Name', 'InternalName', 'FormName', 'Type1', 'Type2', 'HP', 'Attack', 'Defense', 'SpAtk', 'SpDef', 'Spd', 'Abilities', 'HiddenAbility', 'Evolutions', 'Location Found']
-moves_tab = ['InternalName', 'Moves', 'TutorMoves', 'EggMoves']
-poke_info_tab = ['Generation', 'Height', 'Weight', 'Color', 'Pokedex', 'Shape', 'Kind', 'GrowthRate', 'GenderRate', 'GenderRatio', 'Habitat', 'BaseEXP', 'Rareness', 'Happiness', 'Compatibility', 'Incense']
+key_order = ['UniqueID', 'Name', 'InternalName', 'FormName', 'Type1', 'Type2', 'HP', 'Attack', 'Defense', 'SpAtk', 'SpDef', 'Spd', 'Abilities', 'HiddenAbility', 'Evolutions', 'Location Found']
+moves_tab = ['UniqueID', 'InternalName', 'Moves', 'TutorMoves', 'EggMoves']
+poke_info_tab = ['UniqueID', 'Generation', 'Height', 'Weight', 'Color', 'Pokedex', 'Shape', 'Kind', 'GrowthRate', 'GenderRate', 'GenderRatio', 'Habitat', 'BaseEXP', 'Rareness', 'Happiness', 'Compatibility', 'Incense']
 misc_tab = ['WildItemCommon', 'WildItemRare', 'WildItemUncommon', 'StepsToHatch']
 
 # Run the processor
@@ -194,4 +206,5 @@ processor = PokemonDataProcessor(input_file, locations_file, output_file, ignore
 def main():
     processor.run()
 
+# REMOVE WHEN PYINSTALLERING
 #main()

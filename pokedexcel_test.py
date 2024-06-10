@@ -1,5 +1,7 @@
 from openpyxl import Workbook
 import os
+import datetime
+import pandas as pd
 
 class PokemonDataProcessor:
     def __init__(self, input_file, locations_file, output_file, ignore_list, key_order, moves_tab, poke_info_tab, misc_tab):
@@ -14,39 +16,30 @@ class PokemonDataProcessor:
         self.all_data = []
         self.location_data = {}
 
-    @staticmethod
-    def search(values, searchFor):
-        for k, v_list in values.items():
-            if v_list is not None and searchFor in v_list:
-                return k
-        return None
-
-
     # Split and process pokemon base file into Python data dictionary    
     def process_input_file(self):
         with open(self.input_file, 'r') as file:
             lines = file.readlines()
-        
+
         data = {}
-        evos_dict = {}  # Initialize the evolution dictionary
-        
         for line in lines:
             line = line.strip()
             if line == '#-------------------------------':
                 if data:
                     if 'InternalName' not in data or data['InternalName'] is None:
-                        data['InternalName'] = data.get('Name', '').upper()
+                        data['InternalName'] = data['Name'].upper()
+                    data['UniqueID'] = f"{data['Name']}_{data['InternalName']}"  # Generate UniqueID
                     self.all_data.append(data)
                     data = {}
             elif '=' in line:
                 key, value = line.split('=', 1)
                 key = key.strip()
                 value = value.strip()
-
+                # print(key)
                 if key in self.ignore_list and not 'Types':
                     continue
-
                 if key == 'BaseStats':
+                    # print('BaseStats')
                     stats = value.split(',')
                     data['HP'] = stats[0]
                     data['Attack'] = stats[1]
@@ -54,58 +47,35 @@ class PokemonDataProcessor:
                     data['Spd'] = stats[3]
                     data['SpAtk'] = stats[4]
                     data['SpDef'] = stats[5]
-                elif key == 'HiddenAbility':
+                if key == 'HiddenAbility':
+                    # print('HiddenAbility')
                     abilities = value.split(',')
                     for ability in abilities:
                         data['HiddenAbility'] = ability
-                elif key == 'Types':
+                if key == 'Types':
+                    # print('Types')
                     types = value.split(',')
                     data['Type1'] = types[0]
                     if len(types) > 1:
                         data['Type2'] = types[1]
                     else:
                         data['Type2'] = None
-                elif key == 'Evolutions':  # Process evolutions
-                    evolutions = value.split(',')
-                    evolution_list = []
-                    for evo in evolutions:
-                        evo_name = evo.strip()
-                        evolution_list.append(evo_name)
-                        # Add the evolution relationship to the evolution dictionary
-                        if evo_name in evos_dict:
-                            evos_dict[evo_name].append(data.get('InternalName', ''))
-                        else:
-                            evos_dict[evo_name] = [data.get('InternalName', '')]
-                    data[key] = evolution_list
                 else:
                     data[key] = value
-        
+
         if data:
             if 'InternalName' not in data or data['InternalName'] is None:
-                data['InternalName'] = data.get('Name', '').upper()
+                data['InternalName'] = data['Name'].upper()
+            data['UniqueID'] = f"{data['Name']}_{data['InternalName']}"
+
+            # Check if InternalName is EEVEE and update Evolutions field
+            if data.get('InternalName') == 'EEVEE':
+                if 'Evolutions' in data:
+                    data['Evolutions'] += '(32)'
+                else:
+                    data['Evolutions'] = '(32)'
+
             self.all_data.append(data)
-
-        # Process the evolution lines
-        for key, value in list(evos_dict.items()):
-            if len(value) == 1:  # Drop if only one value
-                del evos_dict[key]
-
-        # Update evolution lines
-        for key, value in list(evos_dict.items()):
-            if value is None:
-                # If the value is None, initialize it as an empty list
-                evos_dict[key] = []
-            result_key = self.search(evos_dict, key)
-            if result_key:
-                evos_dict[key] = evos_dict[result_key]
-            else:
-                # Ensure each key's value includes itself
-                if key not in evos_dict[key]:
-                    evos_dict[key].append(key)
-
-        return evos_dict
-
-
 
 
     # Split and process encounters file into Python data dictionary 
@@ -156,31 +126,57 @@ class PokemonDataProcessor:
         # Build the different sheets based on orders below
         main_headers = ['InternalName', 'Name'] + self.key_order if 'InternalName' not in self.key_order else self.key_order
         add_data_to_sheet("Main", self.all_data, main_headers)
+        print('adding to main')
         add_data_to_sheet("Moves", self.all_data, ['InternalName', 'Name'] + self.moves_tab)
         add_data_to_sheet("Poke Info", self.all_data, ['InternalName', 'Name'] + self.poke_info_tab)
         add_data_to_sheet("Misc", self.all_data, ['InternalName', 'Name'] + self.misc_tab)
-        
-        # Add the Evolution Line column
-        main_sheet = wb["Main"]
-        main_sheet['P1'] = "Evolution Line"
-        for i, entry in enumerate(self.all_data, start=2):
-            internal_name = entry.get('InternalName', '')
-            evolution_line = ", ".join(self.evolution_lines.get(internal_name, []))
-            main_sheet.cell(row=i, column=len(main_headers) + 1, value=evolution_line)
         
         if 'Sheet' in wb.sheetnames:
             del wb['Sheet']
         
         wb.save(self.output_file)
 
+    # Check if the Excel sheet exists and has all required columns
+    def check_excel_sheet(self):
+        if not os.path.exists(self.output_file):
+            return False
         
+        required_columns = ['Name', 'InternalName', 'FormName', 'Type1', 'Type2', 'HP', 'Attack', 'Defense', 'SpAtk', 'SpDef', 'Spd', 'Abilities', 'HiddenAbility', 'Evolutions', 'Location Found', 'Evolution Line']
+        
+        try:
+            df = pd.read_excel(self.output_file, sheet_name="Main")
+            columns = df.columns.tolist()
+            print(columns)
+            
+            if set(required_columns).issubset(set(columns)):
+                return True
+            else:
+                print('fail')
+                return False
+                
+        except Exception as e:
+            #print(f"An error occurred while checking Excel sheet: {e}")
+            return False
+    
+    # Check if the Excel sheet was created in the last 2 days
+    def check_excel_creation_date(self):
+        if os.path.exists(self.output_file):
+            creation_time = datetime.datetime.fromtimestamp(os.path.getctime(self.output_file))
+            current_time = datetime.datetime.now()
+            if (current_time - creation_time).days <= 2:
+                print('pass')
+                return True
+        return False
 
     # Run all functions
     def run(self):
-        self.process_input_file()
-        self.process_locations_file()
-        self.add_location_data()
-        self.create_workbook()
+        if self.check_excel_sheet() and self.check_excel_creation_date():
+            pass
+        else:
+            self.process_input_file()
+            self.process_locations_file()
+            self.add_location_data()
+            self.create_workbook()
 
 # Get the directory of the current script file
 #base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -199,9 +195,9 @@ input_file = workbook_path
 locations_file = encounter_path
 output_file = 'pokedexCEL.xlsx'
 ignore_list = ['BaseExp', 'BattlerEnemyX', 'BattlerEnemyY', 'BattlerPlayerX', 'BattlerPlayerY', 'BattlerShadowSize', 'BattlerShadowX', 'CatchRate', 'Types', 'Category', 'EggGroups', 'HatchSteps', 'EVs', 'EffortPoints', 'HiddenAbilities']
-key_order = ['Name', 'InternalName', 'FormName', 'Type1', 'Type2', 'HP', 'Attack', 'Defense', 'SpAtk', 'SpDef', 'Spd', 'Abilities', 'HiddenAbility', 'Evolutions', 'Location Found']
-moves_tab = ['InternalName', 'Moves', 'TutorMoves', 'EggMoves']
-poke_info_tab = ['Generation', 'Height', 'Weight', 'Color', 'Pokedex', 'Shape', 'Kind', 'GrowthRate', 'GenderRate', 'GenderRatio', 'Habitat', 'BaseEXP', 'Rareness', 'Happiness', 'Compatibility', 'Incense']
+key_order = ['UniqueID', 'Name', 'InternalName', 'FormName', 'Type1', 'Type2', 'HP', 'Attack', 'Defense', 'SpAtk', 'SpDef', 'Spd', 'Abilities', 'HiddenAbility', 'Evolutions', 'Location Found']
+moves_tab = ['UniqueID', 'InternalName', 'Moves', 'TutorMoves', 'EggMoves']
+poke_info_tab = ['UniqueID', 'Generation', 'Height', 'Weight', 'Color', 'Pokedex', 'Shape', 'Kind', 'GrowthRate', 'GenderRate', 'GenderRatio', 'Habitat', 'BaseEXP', 'Rareness', 'Happiness', 'Compatibility', 'Incense']
 misc_tab = ['WildItemCommon', 'WildItemRare', 'WildItemUncommon', 'StepsToHatch']
 
 # Run the processor
@@ -210,4 +206,5 @@ processor = PokemonDataProcessor(input_file, locations_file, output_file, ignore
 def main():
     processor.run()
 
-main()
+# REMOVE WHEN PYINSTALLERING
+#main()
