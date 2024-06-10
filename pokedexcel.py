@@ -188,7 +188,7 @@ base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 # Combine the directory path and the file name
 workbook_path = os.path.join('PBS', 'pokemon.txt')
-encounter_path = os.path.join(base_dir, 'PBS', 'encounters.txt')
+encounter_path = os.path.join('PBS', 'encounters.txt')
 
 # Configuration
 input_file = workbook_path
