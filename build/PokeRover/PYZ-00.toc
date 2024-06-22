@@ -1,5 +1,5 @@
-('D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
- 'Pre-Release 3.0\\PokeRover\\dist\\build\\PokeRover\\PYZ-00.pyz',
+('D:\\pokerover_working\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
+ 'Pre-Release 3.0\\PokeRover\\PokeRover\\build\\PokeRover\\PYZ-00.pyz',
  [('PIL',
    'C:\\Users\\tysha\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python310\\site-packages\\PIL\\__init__.py',
    'PYMODULE'),
@@ -930,8 +930,8 @@
    'C:\\Users\\tysha\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python310\\site-packages\\et_xmlfile\\xmlfile.py',
    'PYMODULE'),
   ('evos',
-   'D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
-   'Pre-Release 3.0\\PokeRover\\dist\\evos.py',
+   'D:\\pokerover_working\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
+   'Pre-Release 3.0\\PokeRover\\PokeRover\\evos.py',
    'PYMODULE'),
   ('fractions',
    'C:\\Program '
@@ -3273,8 +3273,8 @@
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.10_3.10.3056.0_x64__qbz5n2kfra8p0\\lib\\plistlib.py',
    'PYMODULE'),
   ('pokedexcel',
-   'D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
-   'Pre-Release 3.0\\PokeRover\\dist\\pokedexcel.py',
+   'D:\\pokerover_working\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
+   'Pre-Release 3.0\\PokeRover\\PokeRover\\pokedexcel.py',
    'PYMODULE'),
   ('pprint',
    'C:\\Program '
@@ -4143,8 +4143,8 @@
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.10_3.10.3056.0_x64__qbz5n2kfra8p0\\lib\\tempfile.py',
    'PYMODULE'),
   ('text_methods',
-   'D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
-   'Pre-Release 3.0\\PokeRover\\dist\\text_methods.py',
+   'D:\\pokerover_working\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
+   'Pre-Release 3.0\\PokeRover\\PokeRover\\text_methods.py',
    'PYMODULE'),
   ('textwrap',
    'C:\\Program '

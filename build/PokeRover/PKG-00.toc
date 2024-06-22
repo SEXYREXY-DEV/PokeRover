@@ -1,5 +1,5 @@
-('D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
- 'Pre-Release 3.0\\PokeRover\\dist\\build\\PokeRover\\PokeRover.pkg',
+('D:\\pokerover_working\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
+ 'Pre-Release 3.0\\PokeRover\\PokeRover\\build\\PokeRover\\PokeRover.pkg',
  {'BINARY': True,
   'DATA': True,
   'EXECUTABLE': True,
@@ -9,32 +9,33 @@
   'PYZ': False,
   'SPLASH': True},
  [('PYZ-00.pyz',
-   'D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
-   'Pre-Release 3.0\\PokeRover\\dist\\build\\PokeRover\\PYZ-00.pyz',
+   'D:\\pokerover_working\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
+   'Pre-Release 3.0\\PokeRover\\PokeRover\\build\\PokeRover\\PYZ-00.pyz',
    'PYZ'),
   ('struct',
-   'D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
-   'Pre-Release 3.0\\PokeRover\\dist\\build\\PokeRover\\localpycs\\struct.pyc',
+   'D:\\pokerover_working\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
+   'Pre-Release '
+   '3.0\\PokeRover\\PokeRover\\build\\PokeRover\\localpycs\\struct.pyc',
    'PYMODULE'),
   ('pyimod01_archive',
-   'D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
+   'D:\\pokerover_working\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
    'Pre-Release '
-   '3.0\\PokeRover\\dist\\build\\PokeRover\\localpycs\\pyimod01_archive.pyc',
+   '3.0\\PokeRover\\PokeRover\\build\\PokeRover\\localpycs\\pyimod01_archive.pyc',
    'PYMODULE'),
   ('pyimod02_importers',
-   'D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
+   'D:\\pokerover_working\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
    'Pre-Release '
-   '3.0\\PokeRover\\dist\\build\\PokeRover\\localpycs\\pyimod02_importers.pyc',
+   '3.0\\PokeRover\\PokeRover\\build\\PokeRover\\localpycs\\pyimod02_importers.pyc',
    'PYMODULE'),
   ('pyimod03_ctypes',
-   'D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
+   'D:\\pokerover_working\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
    'Pre-Release '
-   '3.0\\PokeRover\\dist\\build\\PokeRover\\localpycs\\pyimod03_ctypes.pyc',
+   '3.0\\PokeRover\\PokeRover\\build\\PokeRover\\localpycs\\pyimod03_ctypes.pyc',
    'PYMODULE'),
   ('pyimod04_pywin32',
-   'D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
+   'D:\\pokerover_working\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
    'Pre-Release '
-   '3.0\\PokeRover\\dist\\build\\PokeRover\\localpycs\\pyimod04_pywin32.pyc',
+   '3.0\\PokeRover\\PokeRover\\build\\PokeRover\\localpycs\\pyimod04_pywin32.pyc',
    'PYMODULE'),
   ('pyiboot01_bootstrap',
    'C:\\Users\\tysha\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python310\\site-packages\\PyInstaller\\loader\\pyiboot01_bootstrap.py',
@@ -67,8 +68,8 @@
    'C:\\Users\\tysha\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python310\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth__tkinter.py',
    'PYSOURCE'),
   ('pokemon_lookup',
-   'D:\\pokedex_final_test\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
-   'Pre-Release 3.0\\PokeRover\\Dist\\pokemon_lookup.py',
+   'D:\\pokerover_working\\Project Vanguard Pre-Release 3.0\\Project Vanguard '
+   'Pre-Release 3.0\\PokeRover\\PokeRover\\pokemon_lookup.py',
    'PYSOURCE')],
  True,
  False,

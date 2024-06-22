@@ -286,32 +286,52 @@ class PokemonApp(tk.Tk):
 
     def update_moveset(self):
         if self.selected_pokemon is not None:
-            internal_name = self.selected_pokemon['InternalName'] if self.selected_pokemon['InternalName'] is not None else None
-            name = self.selected_pokemon['Name'] if internal_name is None else None
+            internal_name = self.selected_pokemon.get('InternalName', None)
+            name = self.selected_pokemon.get('Name', None)
             
             if internal_name:
                 moveset = self.data.df_moveset_details[self.data.df_moveset_details['InternalName'] == internal_name]
             else:
                 moveset = self.data.df_moveset_details[self.data.df_moveset_details['Name'] == name]
-                
+            
             if not moveset.empty:
-                moves = moveset.iloc[0]['Moves'].split(',')
-                formatted_moves = "\n".join([f"{moves[i]} - {moves[i + 1]}" for i in range(0, len(moves), 2)])
-                self.moves_text.delete('1.0', tk.END)
-                self.moves_text.insert(tk.END, f"Moves:\n{formatted_moves}\n\n")
-                tutor_moves = moveset.iloc[0]['TutorMoves'].split(',')
-                formatted_tutor_moves = "\n".join(tutor_moves)
-                self.moves_text.insert(tk.END, f"Tutor Moves:\n{formatted_tutor_moves}\n\n")
-                egg_moves_data = moveset.iloc[0]['EggMoves']
-                if isinstance(egg_moves_data, str) and egg_moves_data:  
-                    egg_moves = egg_moves_data.split(',')
-                    formatted_egg_moves = "\n".join(egg_moves)
-                    self.moves_text.insert(tk.END, f"Egg Moves:\n{formatted_egg_moves}")
+                moves = moveset.iloc[0].get('Moves', '')
+                if moves:
+                    moves = moves.split(',')
+                    formatted_moves = []
+                    for move in moves:
+                        move = move.strip().upper()
+                        if move == '':
+                            continue  # Skip empty moves
+                        
+                        formatted_moves.append(move)
+                    formatted_moves_text = "\n".join(formatted_moves)
                 else:
-                    self.moves_text.insert(tk.END, "No Egg Moves Available")
+                    formatted_moves_text = "No Moves Available"
+                
+                self.moves_text.delete('1.0', tk.END)
+                self.moves_text.insert(tk.END, f"Moves:\n{formatted_moves_text}\n\n")
+                
+                tutor_moves = moveset.iloc[0].get('TutorMoves', '')
+                if tutor_moves:
+                    formatted_tutor_moves = "\n".join(tutor_moves.split(','))
+                else:
+                    formatted_tutor_moves = "No Tutor Moves Available"
+                
+                self.moves_text.insert(tk.END, f"Tutor Moves:\n{formatted_tutor_moves}\n\n")
+                
+                egg_moves = moveset.iloc[0].get('EggMoves', '')
+                if egg_moves:
+                    formatted_egg_moves = "\n".join(egg_moves.split(','))
+                else:
+                    formatted_egg_moves = "No Egg Moves Available"
+                
+                self.moves_text.insert(tk.END, f"Egg Moves:\n{formatted_egg_moves}")
             else:
                 self.moves_text.delete('1.0', tk.END)
                 self.moves_text.insert(tk.END, "No Moves Available")
+
+
 
     def toggle_mode(self):
         if self.current_mode == "light":
