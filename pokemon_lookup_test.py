@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, scrolledtext
 from PIL import Image, ImageTk
 import pandas as pd
-import pokedexcel_test
+import pokedexcel
 import evos
 from text_methods import TextWrapper
 
@@ -23,7 +23,11 @@ class PokemonData:
         self.df_misc = self.dfs_cleaned['Misc']
 
         self.regular_folder = os.path.join(base_dir, 'Graphics', 'Pokemon', 'Front')
-        self.shiny_folder = os.path.join(base_dir, 'Graphics', 'Pokemon', 'Front Shiny')
+        self.shiny_folder = os.path.join(base_dir, 'Graphics', 'Pokemon', 'Front shiny')
+        self.back_folder = os.path.join(base_dir, 'Graphics', 'Pokemon', 'Back')
+        self.back_shiny_folder = os.path.join(base_dir, 'Graphics', 'Pokemon', 'Back shiny')
+        self.icons_folder = os.path.join(base_dir, 'Graphics', 'Pokemon', 'Icons')
+        self.icons_shiny_folder = os.path.join(base_dir, 'Graphics', 'Pokemon', 'Icons shiny')
 
 class PokemonApp(tk.Tk):
     def __init__(self, data):
@@ -74,7 +78,7 @@ class PokemonApp(tk.Tk):
         self.image_label = tk.Label(self.details_frame, bg='white')
         self.image_label.pack(pady=10, padx=10)
         self.image_type_var = tk.StringVar(value='Regular')
-        self.image_type_menu = ttk.Combobox(self.details_frame, textvariable=self.image_type_var, font=("Arial", 12))
+        self.image_type_menu = ttk.Combobox(self.details_frame, textvariable=self.image_type_var, font=("Arial", 12), values=['Regular', 'Shiny', 'Back', 'Back Shiny', 'Icon'])
         self.image_type_menu.pack(pady=10, padx=10, anchor='w')
         self.image_type_menu.bind('<<ComboboxSelected>>', self.update_image)
 
@@ -257,32 +261,41 @@ class PokemonApp(tk.Tk):
 
     def update_image_options(self):
         if self.selected_pokemon is not None:
-            image_options = ['Regular', 'Shiny']
+            image_options = ['Regular', 'Shiny', 'Back', 'Back Shiny', 'Icon']
             self.image_type_menu['values'] = image_options
             self.image_type_menu.current(0)
             self.update_image()
 
     def update_image(self, event=None):
-        if self.selected_pokemon is not None:
-            name = self.selected_pokemon['InternalName'] if self.selected_pokemon['InternalName'] is not None else self.selected_pokemon['Name'].lower()
-            image_type = self.image_type_var.get()
-            if image_type == 'Regular':
-                image_path = os.path.join(self.data.regular_folder, f"{name}.png")
-            elif image_type == 'Shiny':
-                image_path = os.path.join(self.data.shiny_folder, f"{name}.png")
-            else:
-                if 'shiny' in image_type.lower():
-                    image_path = os.path.join(self.data.shiny_folder, image_type)
-                else:
-                    image_path = os.path.join(self.data.regular_folder, image_type)
-            if os.path.exists(image_path):
+        if self.selected_pokemon is None:
+            return
+        internal_name = self.selected_pokemon['InternalName'].lower()
+        image_type = self.image_type_var.get()
+        folder_map = {
+            'Regular': self.data.regular_folder,
+            'Shiny': self.data.shiny_folder,
+            'Back': self.data.back_folder,
+            'Back Shiny': self.data.back_shiny_folder,
+            'Icon': self.data.icons_folder
+        }
+        folder = folder_map.get(image_type, self.data.regular_folder)
+        try:
+            if image_type != 'Icon':
+                image_path = os.path.join(folder, f'{internal_name}.png')
                 image = Image.open(image_path)
-                image = image.resize((200, 200), Image.LANCZOS)
+                image = image.resize((192, 192), Image.LANCZOS)
                 photo = ImageTk.PhotoImage(image)
                 self.image_label.config(image=photo)
                 self.image_label.image = photo
             else:
-                self.image_label.config(image='', text='No Image Available')
+                image_path = os.path.join(folder, f'{internal_name}.png')
+                image = Image.open(image_path)
+                image = image.resize((128, 64), Image.LANCZOS)
+                photo = ImageTk.PhotoImage(image)
+                self.image_label.config(image=photo)
+                self.image_label.image = photo
+        except Exception as e:
+            messagebox.showerror("Image Error", f"Error loading image: {e}")
 
     def update_moveset(self):
         if self.selected_pokemon is not None:
@@ -406,7 +419,7 @@ dark_mode_colors = {
 }
 
 def main():
-    pokedexcel_test.main()
+    pokedexcel.main()
     
     # PROJECT PATH
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

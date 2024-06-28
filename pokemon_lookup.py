@@ -23,7 +23,11 @@ class PokemonData:
         self.df_misc = self.dfs_cleaned['Misc']
 
         self.regular_folder = os.path.join(base_dir, 'Graphics', 'Pokemon', 'Front')
-        self.shiny_folder = os.path.join(base_dir, 'Graphics', 'Pokemon', 'Front Shiny')
+        self.shiny_folder = os.path.join(base_dir, 'Graphics', 'Pokemon', 'Front shiny')
+        self.back_folder = os.path.join(base_dir, 'Graphics', 'Pokemon', 'Back')
+        self.back_shiny_folder = os.path.join(base_dir, 'Graphics', 'Pokemon', 'Back shiny')
+        self.icons_folder = os.path.join(base_dir, 'Graphics', 'Pokemon', 'Icons')
+        self.icons_shiny_folder = os.path.join(base_dir, 'Graphics', 'Pokemon', 'Icons shiny')
 
 class PokemonApp(tk.Tk):
     def __init__(self, data):
@@ -74,7 +78,7 @@ class PokemonApp(tk.Tk):
         self.image_label = tk.Label(self.details_frame, bg='white')
         self.image_label.pack(pady=10, padx=10)
         self.image_type_var = tk.StringVar(value='Regular')
-        self.image_type_menu = ttk.Combobox(self.details_frame, textvariable=self.image_type_var, font=("Arial", 12))
+        self.image_type_menu = ttk.Combobox(self.details_frame, textvariable=self.image_type_var, font=("Arial", 12), values=['Regular', 'Shiny', 'Back', 'Back Shiny', 'Icon'])
         self.image_type_menu.pack(pady=10, padx=10, anchor='w')
         self.image_type_menu.bind('<<ComboboxSelected>>', self.update_image)
 
@@ -156,7 +160,7 @@ class PokemonApp(tk.Tk):
                 display_name = f"{row['Name']} ({row['InternalName']})"
                 self.result_listbox.insert(tk.END, display_name)
 
-    def show_details(self, event):
+    def show_details(self, event=None):
         selected_index = self.result_listbox.curselection()
         if selected_index:
             selected_text = self.result_listbox.get(selected_index)
@@ -177,7 +181,11 @@ class PokemonApp(tk.Tk):
             self.update_poke_info()
             self.update_misc_info()
             self.update_evos()
+            
+            if event:
+                print('printed from details')
 
+            
     def update_evos(self, event=None):
         # Clear the existing content in the evos_inner_frame
         for widget in self.evos_inner_frame.winfo_children():
@@ -205,6 +213,12 @@ class PokemonApp(tk.Tk):
                     evo_label = tk.Label(self.evos_inner_frame, image=evo_photo, bg='white')
                     evo_label.image = evo_photo
                     evo_label.grid(row=row, column=col, padx=10, pady=5, sticky='n')
+                    evo_label.bind("<Enter>", lambda event, label=evo_label: label.config(bg="lightgray"))
+                    evo_label.bind("<Leave>", lambda event, label=evo_label: label.config(bg="white"))
+
+                    # Bind click event to the image label
+                    evo_label.bind('<Button-1>', lambda event, name=evo_name: self.on_image_click(name))
+                    #self.result_listbox.bind('<<ListboxSelect>>', self.show_details)
 
                     evo_name_label = tk.Label(self.evos_inner_frame, text=evo, bg='white', font=("Arial", 12))
                     evo_name_label.grid(row=row+1, column=col, padx=10, pady=5, sticky='n')
@@ -218,8 +232,25 @@ class PokemonApp(tk.Tk):
         else:
             no_evos_label = tk.Label(self.evos_inner_frame, text="No Evolution Information Available", bg='white', font=("Arial", 12))
             no_evos_label.pack(padx=10, pady=5, side='top', anchor='w')
+    
+    def on_image_click(self, pokemon_name):
+        
+        if pokemon_name:
+            self.selected_pokemon = self.data.df_pokemon_details[
+                    (self.data.df_pokemon_details['InternalName'] == pokemon_name)
+                ].iloc[0]
+            details = "\n".join(f"{col}: {TextWrapper.wrap_text(str(val), 80)}" for col, val in self.selected_pokemon.items() if col not in ['UniqueID','RegularImagePath', 'ShinyImagePath', 'GrowthRate', 'BaseEXP', 'Rareness'])
+            self.details_text.delete('1.0', tk.END)
+            self.details_text.insert(tk.END, details)
+            self.update_image_options()
+            self.update_moveset()
+            self.update_poke_info()
+            self.update_misc_info()
+            self.notebook.select(self.details_frame)
+            #self.update_evos()
 
 
+    
     def on_frame_configure(self, canvas):
         canvas.configure(scrollregion=canvas.bbox('all'))
 
@@ -257,32 +288,41 @@ class PokemonApp(tk.Tk):
 
     def update_image_options(self):
         if self.selected_pokemon is not None:
-            image_options = ['Regular', 'Shiny']
+            image_options = ['Regular', 'Shiny', 'Back', 'Back Shiny', 'Icon']
             self.image_type_menu['values'] = image_options
             self.image_type_menu.current(0)
             self.update_image()
 
     def update_image(self, event=None):
-        if self.selected_pokemon is not None:
-            name = self.selected_pokemon['InternalName'] if self.selected_pokemon['InternalName'] is not None else self.selected_pokemon['Name'].lower()
-            image_type = self.image_type_var.get()
-            if image_type == 'Regular':
-                image_path = os.path.join(self.data.regular_folder, f"{name}.png")
-            elif image_type == 'Shiny':
-                image_path = os.path.join(self.data.shiny_folder, f"{name}.png")
-            else:
-                if 'shiny' in image_type.lower():
-                    image_path = os.path.join(self.data.shiny_folder, image_type)
-                else:
-                    image_path = os.path.join(self.data.regular_folder, image_type)
-            if os.path.exists(image_path):
+        if self.selected_pokemon is None:
+            return
+        internal_name = self.selected_pokemon['InternalName'].lower()
+        image_type = self.image_type_var.get()
+        folder_map = {
+            'Regular': self.data.regular_folder,
+            'Shiny': self.data.shiny_folder,
+            'Back': self.data.back_folder,
+            'Back Shiny': self.data.back_shiny_folder,
+            'Icon': self.data.icons_folder
+        }
+        folder = folder_map.get(image_type, self.data.regular_folder)
+        try:
+            if image_type != 'Icon':
+                image_path = os.path.join(folder, f'{internal_name}.png')
                 image = Image.open(image_path)
-                image = image.resize((200, 200), Image.LANCZOS)
+                image = image.resize((192, 192), Image.LANCZOS)
                 photo = ImageTk.PhotoImage(image)
                 self.image_label.config(image=photo)
                 self.image_label.image = photo
             else:
-                self.image_label.config(image='', text='No Image Available')
+                image_path = os.path.join(folder, f'{internal_name}.png')
+                image = Image.open(image_path)
+                image = image.resize((128, 64), Image.LANCZOS)
+                photo = ImageTk.PhotoImage(image)
+                self.image_label.config(image=photo)
+                self.image_label.image = photo
+        except Exception as e:
+            messagebox.showerror("Image Error", f"Error loading image: {e}")
 
     def update_moveset(self):
         if self.selected_pokemon is not None:

@@ -1,0 +1,866 @@
+﻿# See the documentation on the wiki to learn how to edit this file.
+#-------------------------------
+[POKEMONTRAINER_Red]
+Name = Pokémon Trainer
+Gender = Male
+BaseMoney = 60
+#-------------------------------
+[POKEMONTRAINER_Leaf]
+Name = Pokémon Trainer
+Gender = Female
+BaseMoney = 60
+#-------------------------------
+[POKEMONTRAINER_Luca]
+Name = Pokémon Trainer
+Gender = Male
+BaseMoney = 60
+#-------------------------------
+[POKEMONTRAINER_May]
+Name = Pokémon Trainer
+Gender = Female
+BaseMoney = 60
+#-------------------------------
+[RIVAL1]
+Name = Rival
+Gender = Male
+BaseMoney = 16
+#-------------------------------
+[NINJABOY]
+Name = Ninja boy
+Gender = Male
+BaseMoney = 20
+#-------------------------------
+[RIVAL2]
+Name = Rival
+Gender = Male
+BaseMoney = 36
+#-------------------------------
+[AROMALADY]
+Name = Aroma Lady
+Gender = Female
+BaseMoney = 32
+#-------------------------------
+[BEAUTY]
+Name = Beauty
+Gender = Female
+BaseMoney = 56
+#-------------------------------
+[LASS]
+Name = Lass
+Gender = Female
+BaseMoney = 10
+SkillLevel = 100
+#-------------------------------
+[SCHOOLGIRL]
+Name = School Girl
+Gender = Unknown
+BaseMoney = 30
+SkillLevel = 100
+IntroBGM = Female
+#-------------------------------
+[SCHOOLKID_F]
+Name = School Kid
+Gender = Unknown
+BaseMoney = 30
+#-------------------------------
+[GAMBLER]
+Name = Gambler
+Gender = Male
+BaseMoney = 72
+SkillLevel = 100
+#-------------------------------
+[BOARDER]
+Name = Boarder
+Gender = Male
+BaseMoney = 30
+SkillLevel = 100
+#-------------------------------
+[BURGLAR]
+Name = Burglar
+Gender = Male
+BaseMoney = 88
+SkillLevel = 100
+#-------------------------------
+[CHANELLER]
+Name = Channeler
+Gender = Female
+BaseMoney = 32
+#-------------------------------
+[CUEBALL]
+Name = Cue Ball
+Gender = Male
+BaseMoney = 24
+SkillLevel = 100
+#-------------------------------
+[ENGINEER]
+Name = Engineer
+Gender = Male
+BaseMoney = 48
+#-------------------------------
+[CRUSHGIRL]
+Name = Crush Girl
+Gender = Female
+BaseMoney = 24
+#-------------------------------
+[BUGCATCHER]
+Name = Bug Catcher
+Gender = Male
+BaseMoney = 16
+SkillLevel = 100
+#-------------------------------
+[GENTLEMAN]
+Name = Gentleman
+Gender = Male
+BaseMoney = 72
+#-------------------------------
+[CAMPER]
+Name = Camper
+Gender = Male
+BaseMoney = 16
+SkillLevel = 100
+#-------------------------------
+[JUGGLER]
+Name = Juggler
+Gender = Male
+BaseMoney = 32
+#-------------------------------
+[LADY]
+Name = Lady
+Gender = Female
+BaseMoney = 160
+SkillLevel = 100
+#-------------------------------
+[PAINTER]
+Name = Painter
+Gender = Female
+BaseMoney = 16
+#-------------------------------
+[POKEMANIAC]
+Name = Poké Maniac
+Gender = Male
+BaseMoney = 64
+#-------------------------------
+[POKEMONBREEDER]
+Name = Pokémon Breeder
+Gender = Male
+BaseMoney = 48
+SkillLevel = 100
+#-------------------------------
+[COWGIRL]
+Name = Cow Girl
+Gender = Female
+BaseMoney = 48
+SkillLevel = 100
+#-------------------------------
+[POKEMONBREEDER_M]
+Name = Pokémon Breeder
+Gender = Male
+BaseMoney = 48
+SkillLevel = 100
+#-------------------------------
+[POKEMONBREEDER_F]
+Name = Pokémon Breeder
+Gender = Female
+BaseMoney = 48
+SkillLevel = 100
+#-------------------------------
+[TUBER_M]
+Name = Tuber
+Gender = Male
+BaseMoney = 4
+SkillLevel = 16
+#-------------------------------
+[TUBER_F]
+Name = Tuber
+Gender = Female
+BaseMoney = 4
+SkillLevel = 16
+#-------------------------------
+[SWIMMER_M]
+Name = Swimmer
+Gender = Male
+BaseMoney = 16
+SkillLevel = 32
+#-------------------------------
+[SAILOR]
+Name = Sailor
+Gender = Male
+BaseMoney = 32
+#-------------------------------
+[SCIENTIST]
+Name = Scientist
+Gender = Male
+BaseMoney = 48
+SkillLevel = 100
+#-------------------------------
+[SUPERNERD]
+Name = Super Nerd
+Gender = Male
+BaseMoney = 48
+#-------------------------------
+[TAMER]
+Name = Tamer
+Gender = Male
+BaseMoney = 40
+#-------------------------------
+[SWIMMER_F]
+Name = Swimmer
+Gender = Female
+BaseMoney = 16
+SkillLevel = 32
+#-------------------------------
+[FISHERMAN]
+Name = Fisherman
+Gender = Male
+BaseMoney = 32
+SkillLevel = 100
+#-------------------------------
+[PICNICKER]
+Name = Picnicker
+Gender = Female
+BaseMoney = 16
+#-------------------------------
+[COOLTRAINER_F]
+Name = Cool Trainer
+Gender = Female
+BaseMoney = 60
+SkillLevel = 100
+#-------------------------------
+[COOLTRAINER_F2]
+Name = Cool Trainer
+Gender = Female
+BaseMoney = 60
+SkillLevel = 100
+#-------------------------------
+[COOLTRAINER_F3]
+Name = Cool Trainer
+Gender = Female
+BaseMoney = 60
+SkillLevel = 100
+#-------------------------------
+[WAITRESS]
+Name = Maid
+Gender = Female
+BaseMoney = 60
+SkillLevel = 100
+#-------------------------------
+[BLACKBELT]
+Name = Black Belt
+Gender = Male
+BaseMoney = 20
+SkillLevel = 100
+#-------------------------------
+[YOUNGSTER]
+Name = Youngster
+Gender = Male
+BaseMoney = 10
+SkillLevel = 100
+#-------------------------------
+[CRIMINALS]
+Name = Criminals
+Gender = Male
+BaseMoney = 10
+SkillLevel = 100
+#-------------------------------
+[PRESCHOOLER_F]
+Name = Preschooler
+Gender = Female
+BaseMoney = 10
+SkillLevel = 100
+#-------------------------------
+[PRESCHOOLER_M]
+Name = Preschooler
+Gender = Male
+BaseMoney = 10
+SkillLevel = 100
+#-------------------------------
+[BIKER]
+Name = Biker
+Gender = Male
+BaseMoney = 32
+#-------------------------------
+[POKEMONRANGER_M]
+Name = Pokémon Ranger
+Gender = Male
+BaseMoney = 60
+SkillLevel = 100
+#-------------------------------
+[POKEMONRANGER_F]
+Name = Pokémon Ranger
+Gender = Female
+BaseMoney = 60
+SkillLevel = 100
+#-------------------------------
+[PSYCHIC_M]
+Name = Psychic
+Gender = Male
+BaseMoney = 32
+#-------------------------------
+[PSYCHIC_F]
+Name = Psychic
+Gender = Female
+BaseMoney = 32
+#-------------------------------
+[RUINMANIAC]
+Name = Ruin Maniac
+Gender = Male
+BaseMoney = 48
+SkillLevel = 100
+#-------------------------------
+[HIKER]
+Name = Hiker
+Gender = Male
+BaseMoney = 32
+#-------------------------------
+[SWIMMER2_M]
+Name = Swimmer
+Gender = Male
+BaseMoney = 16
+SkillLevel = 32
+#-------------------------------
+[SWIMMER2_F]
+Name = Swimmer
+Gender = Female
+BaseMoney = 16
+SkillLevel = 32
+#-------------------------------
+[PROFESSOR]
+Name = Professor
+Gender = Male
+BaseMoney = 100
+#-------------------------------
+[SCIENTISTM]
+Name = Scientist
+Gender = Male
+BaseMoney = 60
+SkillLevel = 50
+#-------------------------------
+[TUBER2_M]
+Name = Tuber
+Gender = Male
+BaseMoney = 4
+SkillLevel = 16
+#-------------------------------
+[TUBER2_F]
+Name = Tuber
+Gender = Female
+BaseMoney = 4
+SkillLevel = 16
+#-------------------------------
+[COOLCOUPLE]
+Name = Cool Couple
+Gender = Unknown
+BaseMoney = 72
+SkillLevel = 100
+#-------------------------------
+[CRUSHKIN]
+Name = Crush Kin
+Gender = Unknown
+BaseMoney = 48
+#-------------------------------
+[SISANDBRO]
+Name = Sis and Bro
+Gender = Unknown
+BaseMoney = 16
+SkillLevel = 100
+#-------------------------------
+[YOUNGCOUPLE]
+Name = Young Couple
+Gender = Unknown
+BaseMoney = 60
+SkillLevel = 32
+#-------------------------------
+[PSYCHICM]
+Name = Psychic
+Gender = Male
+BaseMoney = 60
+SkillLevel = 50
+#-------------------------------
+[PSYCHICF]
+Name = Psychic
+Gender = Female
+BaseMoney = 60
+SkillLevel = 50
+#-------------------------------
+[TEAMROCKET_F]
+Name = Route Boss
+Gender = Female
+BaseMoney = 32
+#-------------------------------
+[ELDER]
+Name = Elder
+Gender = Male
+BaseMoney = 30
+#-------------------------------
+[LEADER_Brock]
+Name = Super Fan
+Gender = Male
+BaseMoney = 25
+SkillLevel = 100
+BattleBGM = Battle Super Fan
+#-------------------------------
+[LEADER_Misty]
+Name = Super Fan
+Gender = Female
+BaseMoney = 25
+SkillLevel = 100
+BattleBGM = Battle Super Fan
+#-------------------------------
+[LEADER_SURGE]
+Name = Super Fan
+Gender = Male
+BaseMoney = 25
+SkillLevel = 100
+BattleBGM = Battle Super Fan
+#-------------------------------
+[LEADER_Erika]
+Name = Super Fan
+Gender = Female
+BaseMoney = 100
+BattleBGM = Battle Super Fan
+#-------------------------------
+[LEADER_Koga]
+Name = Super Fan
+Gender = Male
+BaseMoney = 100
+BattleBGM = Battle Super Fan
+#-------------------------------
+[LEADER_Sabrina]
+Name = Super Fan
+Gender = Female
+BaseMoney = 100
+BattleBGM = Battle Super Fan
+#-------------------------------
+[LEADER_Blaine]
+Name = Super Fan
+Gender = Male
+BaseMoney = 100
+BattleBGM = Battle Super Fan
+#-------------------------------
+[LEADER_Giovanni]
+Name = Super Fan
+Gender = Male
+BaseMoney = 100
+BattleBGM = Battle Super Fan
+#-------------------------------
+[ELITEFOUR_Lorelei]
+Name = Elite Four
+Gender = Female
+BaseMoney = 100
+BattleBGM = Battle Elite
+#-------------------------------
+[ELITEFOUR_Bruno]
+Name = Elite Four
+Gender = Male
+BaseMoney = 100
+BattleBGM = Battle Elite
+#-------------------------------
+[COOLTRAINER_M]
+Name = Cool Trainer
+Gender = Male
+BaseMoney = 50
+SkillLevel = 100
+#-------------------------------
+[ELITEFOUR_Lance]
+Name = Elite Four
+Gender = Male
+BaseMoney = 100
+BattleBGM = Battle Elite
+#-------------------------------
+[CHAMPION]
+Name = Champion
+Gender = Male
+BaseMoney = 100
+BattleBGM = Battle Elite
+#-------------------------------
+[TEAMROCKET_M]
+Name = Ace Trainer
+Gender = Female
+BaseMoney = 60
+SkillLevel = 50
+#-------------------------------
+[TWINS]
+Name = Ace Trainer
+Gender = Female
+BaseMoney = 60
+SkillLevel = 50
+#-------------------------------
+[ROCKER]
+Name = Rocker
+Gender = Male
+BaseMoney = 24
+#-------------------------------
+[FIREBREATHER]
+Name = Fire Breather
+Gender = Male
+BaseMoney = 30
+#-------------------------------
+[WORKER]
+Name = Worker
+Gender = Male
+BaseMoney = 100
+#-------------------------------
+[PUNKGUY]
+Name = Punk
+Gender = Male
+BaseMoney = 30
+#-------------------------------
+[CLERK]
+Name = Clerk
+Gender = Male
+BaseMoney = 100
+#-------------------------------
+[CLERK_F]
+Name = Clerk
+Gender = Female
+BaseMoney = 100
+#-------------------------------
+[BIRDKEEPER]
+Name = Bird Keeper
+Gender = Female
+BaseMoney = 32
+SkillLevel = 100
+#-------------------------------
+[BIRDKEEPER_M]
+Name = Bird Keeper
+Gender = Male
+BaseMoney = 32
+SkillLevel = 100
+#-------------------------------
+[DARKORDER_ADMIN]
+Name = Dark Order
+Gender = Male
+BaseMoney = 30
+BattleBGM = VS Shein
+#-------------------------------
+[DEFIANCE_GRUNT]
+Name = Renegade
+Gender = Unknown
+BaseMoney = 60
+SkillLevel = 100
+IntroBGM = Male
+BattleBGM = VS Defiance grunt.mp3
+#-------------------------------
+[DEFIANCE_GRUNTX]
+Name = Renegade
+Gender = Unknown
+BaseMoney = 60
+SkillLevel = 100
+IntroBGM = Male
+BattleBGM = VS Defiance grunt.mp3
+#-------------------------------
+[ACETRAINERM]
+Name = Ace Trainer
+Gender = Male
+BaseMoney = 20
+SkillLevel = 100
+#-------------------------------
+[ACETRAINERF]
+Name = Ace Trainer
+Gender = Female
+BaseMoney = 20
+SkillLevel = 50
+#-------------------------------
+[ROCKETBOSS]
+Name = Rocket Boss
+Gender = Male
+BaseMoney = 100
+#-------------------------------
+[POKEMONTRAINER_KIERA]
+Name = Pokémon Trainer
+Gender = Female
+BaseMoney = 60
+BattleBGM = VS Kiera
+#-------------------------------
+[CALVIN]
+Name = Aspiring Trainer
+Gender = Male
+BaseMoney = 60
+SkillLevel = 100
+#-------------------------------
+[LEADER_DARIEN]
+Name = Super Fan
+Gender = Male
+BaseMoney = 100
+BattleBGM = VS Darien
+#-------------------------------
+[DESTINY]
+Name = Aspiring Trainer
+Gender = Female
+BaseMoney = 60
+SkillLevel = 100
+BattleBGM = VS DESTINY.mp3
+#-------------------------------
+[LEADER_AKEMI]
+Name = Dojo Master
+Gender = Female
+BaseMoney = 100
+#-------------------------------
+[ZEKE]
+Name = Aspiring Trainer
+Gender = Male
+BaseMoney = 60
+SkillLevel = 100
+#-------------------------------
+[IZEKA]
+Name = Master Trainer
+Gender = Male
+BaseMoney = 100
+#-------------------------------
+[ZAYN]
+Name = Aspiring Trainer
+Gender = Male
+BaseMoney = 60
+SkillLevel = 100
+#-------------------------------
+[KEITH]
+Name = Pokemon Master
+Gender = Male
+BaseMoney = 60
+SkillLevel = 100
+#-------------------------------
+[CLARITY]
+Name = Instructor
+Gender = Female
+BaseMoney = 100
+BattleBGM = Vs Clarity.ogg
+#-------------------------------
+[LEADER_CRESS]
+Name = Super Fan
+Gender = Male
+BaseMoney = 25
+SkillLevel = 100
+#-------------------------------
+[LEADER_CHILI]
+Name = Super Fan
+Gender = Male
+BaseMoney = 25
+SkillLevel = 100
+#-------------------------------
+[LEADER_CILAN]
+Name = Super Fan
+Gender = Male
+BaseMoney = 25
+SkillLevel = 100
+#-------------------------------
+[LEADER_ROARK]
+Name = Super Fan
+Gender = Male
+BaseMoney = 25
+SkillLevel = 100
+#-------------------------------
+[LEADER_FALKNER]
+Name = Super Fan
+Gender = Male
+BaseMoney = 25
+SkillLevel = 100
+#-------------------------------
+[ERIS]
+Name = Aspiring Trainer
+Gender = Male
+BaseMoney = 60
+SkillLevel = 100
+#-------------------------------
+[ROUTEBOSS]
+Name = Route Boss
+Gender = Female
+BaseMoney = 25
+SkillLevel = 100
+#-------------------------------
+[ROUTEBOSSM]
+Name = Route Boss
+Gender = Male
+BaseMoney = 25
+SkillLevel = 100
+#-------------------------------
+[CHELSEA]
+Name = Aspiring Trainer
+Gender = Female
+BaseMoney = 60
+SkillLevel = 100
+#-------------------------------
+[LEADER_BROCK]
+Name = Super Fan
+Gender = Male
+BaseMoney = 25
+SkillLevel = 100
+#-------------------------------
+[HERD1]
+Name = Group of
+Gender = Male
+BaseMoney = 100
+#-------------------------------
+[HERD2]
+Name = Group of
+Gender = Male
+BaseMoney = 100
+#-------------------------------
+[HERD5]
+Name = Group of
+Gender = Male
+BaseMoney = 100
+#-------------------------------
+[CULTF]
+Name = Cult of Isaiah
+Gender = Female
+BaseMoney = 20
+SkillLevel = 100
+#-------------------------------
+[CULTM]
+Name = Cult of Isaiah
+Gender = Male
+BaseMoney = 20
+SkillLevel = 100
+#-------------------------------
+[VIVI]
+Name = Cult of Isaiah
+Gender = Male
+BaseMoney = 20
+SkillLevel = 100
+#-------------------------------
+[SHONUN]
+Name = Instructor
+Gender = Male
+BaseMoney = 100
+#-------------------------------
+[HERD3]
+Name = Group of
+Gender = Male
+BaseMoney = 100
+#-------------------------------
+[LEADER_BUGSY]
+Name = Super Fan
+Gender = Male
+BaseMoney = 25
+SkillLevel = 100
+#-------------------------------
+[LEADER_GARDENIA]
+Name = Super Fan
+Gender = Female
+BaseMoney = 25
+SkillLevel = 100
+#-------------------------------
+[LEADER_LENORA]
+Name = Super Fan
+Gender = Female
+BaseMoney = 25
+SkillLevel = 100
+#-------------------------------
+[LEADER_WHITNEY]
+Name = Super Fan
+Gender = Male
+BaseMoney = 25
+SkillLevel = 100
+#-------------------------------
+[LEADER_FANTINA]
+Name = Super Fan
+Gender = Female
+BaseMoney = 25
+SkillLevel = 100
+#-------------------------------
+[LEADER_ROXIE]
+Name = Super Fan
+Gender = Female
+BaseMoney = 25
+SkillLevel = 100
+#-------------------------------
+[JACKIE]
+Name = Pokemon Trainer
+Gender = Female
+BaseMoney = 200
+#-------------------------------
+[NAKURA]
+Name = Pokemon Trainer
+Gender = Male
+BaseMoney = 25
+SkillLevel = 100
+#-------------------------------
+[HERD4]
+Name = Group of
+Gender = Male
+BaseMoney = 100
+#-------------------------------
+[CRIMINALLEADER]
+Name = Criminal Leader
+Gender = Male
+BaseMoney = 100
+#-------------------------------
+[KETSUMARI]
+Name = Pokemon Master
+Gender = Female
+BaseMoney = 25
+SkillLevel = 100
+#-------------------------------
+[AKUMA]
+Name = Pokemon Master
+Gender = Male
+BaseMoney = 25
+SkillLevel = 100
+#-------------------------------
+[HOTARU]
+Name = Pokemon Master
+Gender = Female
+BaseMoney = 25
+SkillLevel = 100
+#-------------------------------
+[GUARD]
+Name = Security Guard
+Gender = Male
+BaseMoney = 15
+SkillLevel = 100
+#-------------------------------
+[LAUREL]
+Name = Aspiring Trainer
+Gender = Female
+BaseMoney = 60
+SkillLevel = 100
+#-------------------------------
+[DUSKNOIR]
+Name = Alpha
+Gender = Male
+BaseMoney = 25
+SkillLevel = 100
+#-------------------------------
+[DEN]
+Name = Enraged Pokemon
+Gender = Male
+BaseMoney = 0
+SkillLevel = 100
+BattleBGM = Battle Den
+#-------------------------------
+[RYLAS]
+Name = Aspiring Trainer
+Gender = Female
+BaseMoney = 60
+SkillLevel = 100
+#-------------------------------
+[COOLTRAINER_M3]
+Name = Cool Trainer
+Gender = Male
+BaseMoney = 25
+SkillLevel = 100
+#-------------------------------
+[CHARM]
+Name = Pokemon Trainer
+Gender = Female
+BaseMoney = 60
+SkillLevel = 100
+#-------------------------------
+[ZENTH]
+Name = Renegade
+Gender = Male
+BaseMoney = 60
+SkillLevel = 100
+#-------------------------------
+[HERD7]
+Name = Group of
+Gender = Male
+BaseMoney = 25
+SkillLevel = 100
+#-------------------------------
+[KHORTARES]
+Name = Enraged Pokemon
+Gender = Male
+BaseMoney = 0
+SkillLevel = 100
+BattleBGM = Battle Den
