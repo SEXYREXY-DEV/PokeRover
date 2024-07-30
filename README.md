@@ -4,12 +4,12 @@ PokéRover is a Python-based application for browsing Pokémon essentials data. 
 
 ## HOW TO: Vanguard Players
 
-- Dowload and extract 'dist.zip', place it here ![extract_example](Pics/extracted.png) and your path should look like this. ![path_example](Pics/req_path.png)
+- Dowload and extract 'dist.zip', place it here ![extract_example](Pics/extracted.PNG) and your path should look like this. ![path_example](Pics/req_path.PNG)
 - As of right now, it is updated to patch 3.0.16. I will update this version whenever I update the PBS files. If you notice that the version is way off, have someone in the Vanguard server gen them for you. (Probably not required soon if ever)
 
 ## HOW TO: Players of other fan games
 
-1. Dowload and extract 'dist.zip', place it here ![extract_example](Pics/extracted.png) and your path should look like this. ![path_example](Pics/req_path.png)
+1. Dowload and extract 'dist.zip', place it here ![extract_example](Pics/extracted.PNG) and your path should look like this. ![path_example](Pics/req_path.PNG)
 2. Replace the PBS files 'abilities.txt' , 'encounters.txt', 'moves.txt', and 'pokemon.txt' with the other games files. All built in PBS files are from Vanguard.
 3. If you want megas or forms to work you will need a converted 'pokemon.txt' file as 'pokemon_forms.txt', which usually holds megas is not supported. Contact a dev of the game to reach out to me and we can sort it out.
 
@@ -17,10 +17,10 @@ PokéRover is a Python-based application for browsing Pokémon essentials data. 
 - For now, contact me on Discord @sexyrexy1212 for support, will have to walk your through using @PDM20's converter to make it work properly.
 
 ## Examples
-![extract_example](Pics/base_search.png)
-![extract_example](Pics/dark_speed.png)
-![extract_example](Pics/moves.png)
-![extract_example](Pics/evos.png)
+![extract_example](Pics/base_search.PNG)
+![extract_example](Pics/dark_speed.PNG)
+![extract_example](Pics/moves.PNG)
+![extract_example](Pics/evos.PNG)
 ## Features
 
 - **Search**: Users can search for Pokémon by name using the search bar.
