@@ -1,11 +1,13 @@
 import os
 import tkinter as tk
+import re
 from tkinter import ttk, messagebox, scrolledtext
 from PIL import Image, ImageTk
 import pandas as pd
 import pokedexcel
 import evos
 from text_methods import TextWrapper
+
 
 # Data class because apparently globals are bad practice :(
 class PokemonData:
@@ -45,23 +47,82 @@ class PokemonApp(tk.Tk):
         self.selected_pokemon = None
         self.sort_criteria = 'Name'
 
-        self.toggle_button = tk.Button(self, text="Dark Mode", command=self.toggle_mode, font=("Arial", 12))
+        self.toggle_button = tk.Button(self, text="                                        Dark Mode                                        ", command=self.toggle_mode, font=("Arial", 12))
         self.toggle_button.pack(pady=10)
 
         # Left pane
         self.left_pane = tk.Frame(self, width=240, bg='white')
         self.left_pane.pack(side='left', fill='y', padx=10, pady=10)
-        self.search_label = tk.Label(self.left_pane, text="Search Pokemon:", font=("Arial", 12), bg='white')
-        self.search_label.pack(pady=10)
-        self.search_entry = tk.Entry(self.left_pane, width=20, font=("Arial", 12))
-        self.search_entry.pack(pady=10)
-        self.search_entry.bind('<Return>', lambda event: self.search_pokemon())
+        
+        # Create Frames to hold each dropdown and clear button
+        self.search_frames = {
+            "Name": tk.Frame(self.left_pane, bg='white'),
+            "Ability": tk.Frame(self.left_pane, bg='white'),
+            "Move": tk.Frame(self.left_pane, bg='white'),
+            "Type": tk.Frame(self.left_pane, bg='white')
+        }
+
+        # Create the dropdown menus and clear buttons
+        self.search_criteria_vars = {
+            "Name": tk.StringVar(value=""),
+            "Ability": tk.StringVar(value=""),
+            "Move": tk.StringVar(value=""),
+            "Type": tk.StringVar(value="")
+        }
+
+        self.search_criteria_labels = {
+            "Name": tk.Label(self.search_frames["Name"], text="Name:", font=("Arial", 12), bg='white'),
+            "Ability": tk.Label(self.search_frames["Ability"], text="Ability:", font=("Arial", 12), bg='white'),
+            "Move": tk.Label(self.search_frames["Move"], text="Move:", font=("Arial", 12), bg='white'),
+            "Type": tk.Label(self.search_frames["Type"], text="Type:", font=("Arial", 12), bg='white')
+        }
+
+        self.search_criteria_menus = {
+            "Name": ttk.Combobox(self.search_frames["Name"], textvariable=self.search_criteria_vars["Name"], font=("Arial", 12)),
+            "Ability": ttk.Combobox(self.search_frames["Ability"], textvariable=self.search_criteria_vars["Ability"], font=("Arial", 12)),
+            "Move": ttk.Combobox(self.search_frames["Move"], textvariable=self.search_criteria_vars["Move"], font=("Arial", 12)),
+            "Type": ttk.Combobox(self.search_frames["Type"], textvariable=self.search_criteria_vars["Type"], font=("Arial", 12))
+        }
+
+        self.clear_buttons = {
+            "Name": tk.Button(self.search_frames["Name"], text="X", command=lambda: self.clear_selection("Name"), font=("Arial", 10), fg='red'),
+            "Ability": tk.Button(self.search_frames["Ability"], text="X", command=lambda: self.clear_selection("Ability"), font=("Arial", 10), fg='red'),
+            "Move": tk.Button(self.search_frames["Move"], text="X", command=lambda: self.clear_selection("Move"), font=("Arial", 10), fg='red'),
+            "Type": tk.Button(self.search_frames["Type"], text="X", command=lambda: self.clear_selection("Type"), font=("Arial", 10), fg='red')
+        }
+        
+        # Pack widgets within each frame (doesn't work but helps for coloring lol)
+        for key in ["Name", "Ability", "Move", "Type"]:
+            self.search_criteria_labels[key].pack(side=tk.LEFT, padx=(0, 5))
+            self.search_criteria_menus[key].pack(side=tk.LEFT, padx=(0, 5))
+            self.clear_buttons[key].pack(side=tk.LEFT)
+            self.search_frames[key].pack(pady=5, fill=tk.X)
+
+        # All filter option boxes
+        self.search_criteria_menus["Name"].bind('<Return>', lambda event: self.search_pokemon())
+        self.search_criteria_menus["Ability"].bind('<Return>', lambda event: self.search_pokemon())
+        self.search_criteria_menus["Move"].bind('<Return>', lambda event: self.search_pokemon())
+        self.search_criteria_menus["Type"].bind('<Return>', lambda event: self.search_pokemon())
+        self.search_criteria_labels["Name"].pack(pady=5)
+        self.search_criteria_menus["Name"].pack(pady=5)
+        self.search_criteria_labels["Ability"].pack(pady=5)
+        self.search_criteria_menus["Ability"].pack(pady=5)
+        self.search_criteria_labels["Move"].pack(pady=5)
+        self.search_criteria_menus["Move"].pack(pady=5)
+        self.search_criteria_labels["Type"].pack(pady=5)
+        self.search_criteria_menus["Type"].pack(pady=5)
         self.search_button = tk.Button(self.left_pane, text="Search", command=self.search_pokemon, font=("Arial", 12))
         self.search_button.pack(pady=10)
         self.result_listbox = tk.Listbox(self.left_pane, width=30, height=30, font=("Arial", 12))
         self.result_listbox.pack(pady=20)
         self.result_listbox.bind('<<ListboxSelect>>', self.show_details)
+        self.search_criteria_menus["Name"].bind('<<ComboboxSelected>>', lambda event: self.search_pokemon())
+        self.search_criteria_menus["Ability"].bind('<<ComboboxSelected>>', lambda event: self.search_pokemon())
+        self.search_criteria_menus["Move"].bind('<<ComboboxSelected>>', lambda event: self.search_pokemon())
+        self.search_criteria_menus["Type"].bind('<<ComboboxSelected>>', lambda event: self.search_pokemon())
 
+        # Populate dropdowns with unique values from data
+        self.populate_dropdowns()
         # Right pane
         self.right_pane = tk.Frame(self, bg='white')
         self.right_pane.pack(side='right', fill='both', expand=True)
@@ -72,7 +133,7 @@ class PokemonApp(tk.Tk):
 
         # Details Frame
         self.details_frame = tk.Frame(self.notebook, bg='white')
-        self.notebook.add(self.details_frame, text='Details')
+        self.notebook.add(self.details_frame, text='                    Details                    ')
         self.details_text = scrolledtext.ScrolledText(self.details_frame, wrap=tk.WORD, font=("Arial", 12), bg='white', height=15, width=70)
         self.details_text.pack(pady=10, padx=10, fill='both', expand=True)
         self.image_label = tk.Label(self.details_frame, bg='white')
@@ -84,25 +145,25 @@ class PokemonApp(tk.Tk):
 
         # Moves Frame
         self.moves_frame = tk.Frame(self.notebook, bg='white')
-        self.notebook.add(self.moves_frame, text='Moves')
+        self.notebook.add(self.moves_frame, text='                    Moves                    ')
         self.moves_text = scrolledtext.ScrolledText(self.moves_frame, wrap=tk.WORD, font=("Arial", 12), bg='white')
         self.moves_text.pack(side='left', pady=10, padx=10, fill='both', expand=True)
 
         # Poke Info Frame
         self.poke_info_frame = tk.Frame(self.notebook, bg='white')
-        self.notebook.add(self.poke_info_frame, text='Poke Info')
+        self.notebook.add(self.poke_info_frame, text='                    Poke Info                    ')
         self.poke_info_label = tk.Label(self.poke_info_frame, text="", justify='left', anchor='nw', bg='white', font=("Arial", 12))
         self.poke_info_label.pack(pady=10, padx=10, fill='both', expand=True)
 
         # Misc Frame
         self.misc_frame = tk.Frame(self.notebook, bg='white')
-        self.notebook.add(self.misc_frame, text='Misc')
+        self.notebook.add(self.misc_frame, text='                    Misc                    ')
         self.misc_label = tk.Label(self.misc_frame, text="", justify='left', anchor='nw', bg='white', font=("Arial", 12))
         self.misc_label.pack(pady=10, padx=10, fill='both', expand=True)
 
         # Evos Frame
         self.evos_frame = tk.Frame(self.notebook, bg='white')
-        self.notebook.add(self.evos_frame, text='Evos')
+        self.notebook.add(self.evos_frame, text='                    Evos                    ')
         self.evos_canvas = tk.Canvas(self.evos_frame, bg='white')
         self.evos_canvas.pack(side='left', fill='both', expand=True)
         self.evos_scrollbar = tk.Scrollbar(self.evos_frame, orient='vertical', command=self.evos_canvas.yview)
@@ -116,51 +177,100 @@ class PokemonApp(tk.Tk):
         self.evos_image_type_menu.pack(pady=10, padx=10, anchor='w')
         self.evos_image_type_menu.bind('<<ComboboxSelected>>', self.update_evos)
 
-
-
-        # Creator Frame
+        # Support Frame
         self.creator_frame = tk.Frame(self.notebook, bg='white')
-        self.notebook.add(self.creator_frame, text='Credits')
+        self.notebook.add(self.creator_frame, text='                    Support                    ')
         self.creator_label = tk.Label(self.creator_frame, text="https://github.com/SEXYREXY-DEV   //////   sexyrexy1212 on discord", justify='left', anchor='nw', bg='white', font=("Arial", 12))
         self.creator_label.pack(pady=10, padx=10, fill='both', expand=True)
         self.add_tyrantrum_image()
 
-        # Sorting dropdown menu
+        # Sort options
+        self.sort_criteria_var = tk.StringVar(value="Name")
         self.sort_criteria_label = tk.Label(self, text="Sort by:", font=("Arial", 12), bg='white')
         self.sort_criteria_label.place(x=10, y=10)
-        self.sort_criteria = ttk.Combobox(self, values=["Name", "HP", "Attack", "Defense", "SpAtk", "SpDef", "Spd"], font=("Arial", 12))
-        self.sort_criteria.place(x=10, y=40)
-        self.sort_criteria.current(0)  # Set default sorting criterion
-        self.sort_criteria.bind('<<ComboboxSelected>>', self.sort_pokemon)
+        self.sort_criteria_menu = ttk.Combobox(self, textvariable=self.sort_criteria_var, values=["Name", "HP", "Attack", "Defense", "SpAtk", "SpDef", "Spd"], font=("Arial", 12))
+        self.sort_criteria_menu.place(x=10, y=40)
+        self.sort_criteria_menu.bind("<<ComboboxSelected>>", lambda event: self.search_pokemon())
 
-    def sort_pokemon(self, event=None):
-        sort_by = self.sort_criteria.get()
-        if sort_by == "Name":
-            self.data.df_pokemon_details.sort_values(by=sort_by, inplace=True, ascending=True)
-        else:
-            self.data.df_pokemon_details.sort_values(by=sort_by, inplace=True, ascending=False)
-        self.display_sorted_results()
+    # Populate the dropdowns with stuff from the PBS files
+    def populate_dropdowns(self):
+        # Get unique Pokémon names, abilities, types from the data
+        names = self.data.df_pokemon_details['Name'].dropna().unique()
+        abilities = (self.data.df_pokemon_details['Abilities'].dropna().str.split(',', expand=True).stack().str.split('-', expand=True)[0].dropna().unique())
+        types = self.data.df_pokemon_details[['Type1', 'Type2']].stack().dropna().unique()
 
-    def display_sorted_results(self):
-        self.result_listbox.delete(0, tk.END)
-        unique_results = self.data.df_pokemon_details.drop_duplicates(subset=['InternalName'])
-        for index, row in unique_results.iterrows():
-            display_name = f"{row['Name']} ({row['InternalName']})"
-            self.result_listbox.insert(tk.END, display_name)
+        with open('PBS/moves.txt', 'r') as file:
+            content = file.read()
+            moves_list = []
+            moves = {}
+            move_blocks = content.split('#-------------------------------')
+            move_pattern = re.compile(r"\[(.*?)\](.*?)Name = (.*?)\nType = (.*?)\nCategory = (.*?)\n(?:Power = (.*?)\n)?Accuracy = (.*?)\n", re.S)
 
+            for block in move_blocks:
+                match = move_pattern.search(block)
+                if match:
+                    move_code, _, name, move_type, category, power, accuracy = match.groups()
+                    
+                    # If power is None, set it to a default value or handle it accordingly
+                    power = power.strip() if power is not None else 'N/A'
+                    
+                    moves[move_code.strip().upper()] = {
+                        'Name': name.strip(),
+                        'Type': move_type.strip(),
+                        'Category': category.strip(),
+                        'Power': power,
+                        'Accuracy': accuracy.strip(),
+                    }
+            for key, move in moves.items():
+                moves_list.append(key)
+
+        self.search_criteria_menus["Name"]['values'] = sorted(names)
+        self.search_criteria_menus["Ability"]['values'] = sorted(abilities)
+        self.search_criteria_menus["Move"]['values'] = sorted(moves)
+        self.search_criteria_menus["Type"]['values'] = sorted(types)
+
+    # Everything for searching and sorting
     def search_pokemon(self):
-        query = self.search_entry.get().strip().lower()
-        results = self.data.df_pokemon_details[self.data.df_pokemon_details['Name'].str.lower().str.contains(query)]
-        if results.empty:
-            messagebox.showerror("Error", "No Pokemon found with that name.")
+        name_query = self.search_criteria_vars["Name"].get().strip().lower()
+        ability_query = self.search_criteria_vars["Ability"].get().strip().lower()
+        move_query = self.search_criteria_vars["Move"].get().strip().lower()
+        type_query = self.search_criteria_vars["Type"].get().strip().lower()
+
+        filtered_df = self.data.df_pokemon_details.copy()
+
+        if name_query:
+            filtered_df = filtered_df[filtered_df['Name'].str.lower().str.contains(name_query)]
+        if ability_query:
+            filtered_df = filtered_df[
+                filtered_df['Abilities'].str.lower().str.contains(ability_query) |
+                filtered_df['HiddenAbility'].str.lower().str.contains(ability_query)
+            ]
+        if move_query:
+            moves_df = self.data.df_moveset_details[self.data.df_moveset_details['Moves'].str.lower().str.contains(move_query)]
+            pokemon_with_moves = moves_df['InternalName'].unique()
+            filtered_df = filtered_df[filtered_df['InternalName'].isin(pokemon_with_moves)]
+        if type_query:
+            filtered_df = filtered_df[
+                (filtered_df['Type1'].str.lower() == type_query) | 
+                (filtered_df['Type2'].str.lower() == type_query)
+            ]
+
+        if filtered_df.empty:
+            messagebox.showerror("Error", "No Pokémon found with the given criteria.")
         else:
-            sorted_results = results.sort_values(by='Name', ascending=True)
+            sort_by = self.sort_criteria_var.get()
+            if sort_by in ["HP", "Attack", "Defense", "SpAtk", "SpDef", "Spd"]:
+                filtered_df = filtered_df.sort_values(by=sort_by, ascending=False)
+            else:
+                filtered_df = filtered_df.sort_values(by='Name', ascending=True)
+
             self.result_listbox.delete(0, tk.END)
-            for index, row in sorted_results.iterrows():
+            for index, row in filtered_df.iterrows():
                 display_name = f"{row['Name']} ({row['InternalName']})"
                 self.result_listbox.insert(tk.END, display_name)
 
-    def show_details(self, event):
+    # Show main page
+    def show_details(self, event=None):
         selected_index = self.result_listbox.curselection()
         if selected_index:
             selected_text = self.result_listbox.get(selected_index)
@@ -182,26 +292,22 @@ class PokemonApp(tk.Tk):
             self.update_misc_info()
             self.update_evos()
 
+    # Part of updating on search (Probably could be its own class)
     def update_evos(self, event=None):
-        # Clear the existing content in the evos_inner_frame
         for widget in self.evos_inner_frame.winfo_children():
             widget.destroy()
-
         if self.selected_pokemon is not None and self.selected_pokemon['Evolution Line']:
             evos = self.selected_pokemon['Evolution Line'].split(', ')
             col_count = 6
             image_type = self.evos_image_type_var.get()
-
             for index, evo in enumerate(evos):
                 row = index // col_count * 2
                 col = index % col_count
-
                 evo_name = evo.split('(')[0].strip()
                 if image_type == 'Regular':
                     evo_image_path = os.path.join(self.data.regular_folder, f"{evo_name}.png")
                 elif image_type == 'Shiny':
                     evo_image_path = os.path.join(self.data.shiny_folder, f"{evo_name}.png")
-
                 if os.path.exists(evo_image_path):
                     evo_image = Image.open(evo_image_path)
                     evo_image = evo_image.resize((100, 100), Image.LANCZOS)
@@ -209,24 +315,36 @@ class PokemonApp(tk.Tk):
                     evo_label = tk.Label(self.evos_inner_frame, image=evo_photo, bg='white')
                     evo_label.image = evo_photo
                     evo_label.grid(row=row, column=col, padx=10, pady=5, sticky='n')
-
+                    evo_label.bind("<Enter>", lambda event, label=evo_label: label.config(bg="lightgray"))
+                    evo_label.bind("<Leave>", lambda event, label=evo_label: label.config(bg="white"))
+                    evo_label.bind('<Button-1>', lambda event, name=evo_name: self.on_image_click(name))
                     evo_name_label = tk.Label(self.evos_inner_frame, text=evo, bg='white', font=("Arial", 12))
                     evo_name_label.grid(row=row+1, column=col, padx=10, pady=5, sticky='n')
                 else:
                     evo_name_label = tk.Label(self.evos_inner_frame, text=evo, bg='white', font=("Arial", 12))
                     evo_name_label.grid(row=row, column=col, padx=10, pady=5, sticky='n')
-
-            # Configure grid columns to expand evenly
             for col in range(col_count):
                 self.evos_inner_frame.columnconfigure(col, weight=1)
         else:
             no_evos_label = tk.Label(self.evos_inner_frame, text="No Evolution Information Available", bg='white', font=("Arial", 12))
             no_evos_label.pack(padx=10, pady=5, side='top', anchor='w')
+    
+    # Evo image click
+    def on_image_click(self, pokemon_name):
+        if pokemon_name:
+            self.selected_pokemon = self.data.df_pokemon_details[
+                    (self.data.df_pokemon_details['InternalName'] == pokemon_name)
+                ].iloc[0]
+            details = "\n".join(f"{col}: {TextWrapper.wrap_text(str(val), 80)}" for col, val in self.selected_pokemon.items() if col not in ['UniqueID','RegularImagePath', 'ShinyImagePath', 'GrowthRate', 'BaseEXP', 'Rareness'])
+            self.details_text.delete('1.0', tk.END)
+            self.details_text.insert(tk.END, details)
+            self.update_image_options()
+            self.update_moveset()
+            self.update_poke_info()
+            self.update_misc_info()
+            self.notebook.select(self.details_frame)
 
-
-    def on_frame_configure(self, canvas):
-        canvas.configure(scrollregion=canvas.bbox('all'))
-
+    # Part of updating on search (Probably could be its own class)
     def update_poke_info(self):
         if self.selected_pokemon is not None:
             poke_info = ""
@@ -237,12 +355,13 @@ class PokemonApp(tk.Tk):
             
             if not poke_info_data.empty:
                 for col, val in poke_info_data.iloc[0].items():
-                    wrapped_val = TextWrapper.wrap_text(str(val), 100)  # Adjust the width as needed
+                    wrapped_val = TextWrapper.wrap_text(str(val), 100)
                     poke_info += f"{col}: {wrapped_val}\n"
             else:
                 poke_info = "No Poke Info Available"
             self.poke_info_label.config(text=poke_info)
 
+    # Part of updating on search (Probably could be its own class)
     def update_misc_info(self):
         if self.selected_pokemon is not None:
             misc_info = "" 
@@ -253,12 +372,13 @@ class PokemonApp(tk.Tk):
             
             if not misc_info_data.empty:
                 for col, val in misc_info_data.iloc[0].items():
-                    wrapped_val = TextWrapper.wrap_text(str(val), 100)  # Adjust the width as needed
+                    wrapped_val = TextWrapper.wrap_text(str(val), 100)
                     misc_info += f"{col}: {wrapped_val}\n"
             else:
                 misc_info = "No Misc Info Available"
             self.misc_label.config(text=misc_info)
 
+    # Part of updating on search (Probably could be its own class)
     def update_image_options(self):
         if self.selected_pokemon is not None:
             image_options = ['Regular', 'Shiny', 'Back', 'Back Shiny', 'Icon']
@@ -266,6 +386,7 @@ class PokemonApp(tk.Tk):
             self.image_type_menu.current(0)
             self.update_image()
 
+    # Part of updating on search (Probably could be its own class)
     def update_image(self, event=None):
         if self.selected_pokemon is None:
             return
@@ -297,6 +418,7 @@ class PokemonApp(tk.Tk):
         except Exception as e:
             messagebox.showerror("Image Error", f"Error loading image: {e}")
 
+    # Part of updating on search (Probably could be its own class)
     def update_moveset(self):
         if self.selected_pokemon is not None:
             internal_name = self.selected_pokemon.get('InternalName', None)
@@ -343,9 +465,18 @@ class PokemonApp(tk.Tk):
             else:
                 self.moves_text.delete('1.0', tk.END)
                 self.moves_text.insert(tk.END, "No Moves Available")
+    
+    # Clear the Sort or Choice selections            
+    def clear_selection(self, criteria):
+        """Clear the selection of the specified search criteria and trigger search."""
+        self.search_criteria_vars[criteria].set("")
+        self.search_pokemon()
+        
+    # Interesting fix to a silly thing
+    def on_frame_configure(self, canvas):
+        canvas.configure(scrollregion=canvas.bbox('all'))
 
-
-
+    # Change light or dark mode
     def toggle_mode(self):
         if self.current_mode == "light":
             self.colors = dark_mode_colors
@@ -356,11 +487,11 @@ class PokemonApp(tk.Tk):
         
         self.apply_color_scheme()
 
+    # Make colors work, kinda
     def apply_color_scheme(self):
         self.configure(bg=self.colors["bg"])
+        self.details_frame.configure(bg=self.colors["bg"])
         self.left_pane.configure(bg=self.colors["bg"])
-        self.search_label.configure(bg=self.colors["bg"], fg=self.colors["fg"])
-        self.search_entry.configure(bg=self.colors["entry_bg"], fg=self.colors["entry_fg"])
         self.search_button.configure(bg=self.colors["button_bg"], fg=self.colors["button_fg"])
         self.result_listbox.configure(bg=self.colors["listbox_bg"], fg=self.colors["listbox_fg"])
         self.right_pane.configure(bg=self.colors["bg"])
@@ -376,7 +507,13 @@ class PokemonApp(tk.Tk):
         self.evos_frame.configure(bg=self.colors["bg"])
         self.evos_canvas.configure(bg=self.colors["bg"])
         self.evos_inner_frame.configure(bg=self.colors["bg"])
+        self.creator_frame.configure(bg=self.colors["bg"])
+        self.creator_label.configure(bg=self.colors["bg"])
+        self.sort_criteria_label.configure(bg=self.colors["bg"])
+        for key in ["Name", "Ability", "Move", "Type"]:
+            self.search_frames[key].configure(bg=self.colors["bg"])
 
+    # Hehe
     def add_tyrantrum_image(self):
         try:
             # Load the image from the shiny folder
@@ -392,6 +529,7 @@ class PokemonApp(tk.Tk):
         except Exception as e:
             print(f"Error loading Tyrantrum image: {e}")
 
+# Colors
 light_mode_colors = {
     "bg": "white",
     "fg": "black",
@@ -418,6 +556,7 @@ dark_mode_colors = {
     "text_fg": "white"
 }
 
+# Main def
 def main():
     pokedexcel.main()
     

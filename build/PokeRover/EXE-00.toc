@@ -82,7 +82,7 @@
  [],
  False,
  False,
- 1719557678,
+ 1722318534,
  [('runw.exe',
    'C:\\Users\\tysha\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python310\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\runw.exe',
    'EXECUTABLE')])

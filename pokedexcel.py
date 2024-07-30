@@ -32,10 +32,11 @@ class MoveParser:
         return moves
 
 class PokemonDataProcessor:
-    def __init__(self, input_file, locations_file, moves_file, output_file, ignore_list, key_order, moves_tab, poke_info_tab, misc_tab):
+    def __init__(self, input_file, locations_file, moves_file, output_file, abilities_file, ignore_list, key_order, moves_tab, poke_info_tab, misc_tab):
         self.input_file = input_file
         self.locations_file = locations_file
         self.moves_file = moves_file
+        self.abilities_file = abilities_file
         self.output_file = output_file
         self.ignore_list = ignore_list
         self.key_order = key_order
@@ -45,6 +46,19 @@ class PokemonDataProcessor:
         self.all_data = []
         self.location_data = {}
         self.move_parser = MoveParser(self.moves_file)
+        self.abilities = self.retrieve_ability_descriptions()  # Load ability descriptions
+
+    def retrieve_ability_descriptions(self):
+        abilities = {}
+        with open(self.abilities_file, 'r') as file:
+            for line in file:
+                parts = line.strip().split(',')
+                if len(parts) >= 4:
+                    ability_name = parts[1].strip()
+                    description = parts[3].strip().strip('"')
+                    abilities[ability_name] = description
+        
+        return abilities
 
     def process_input_file(self):
         with open(self.input_file, 'r') as file:
@@ -58,6 +72,16 @@ class PokemonDataProcessor:
                     if 'InternalName' not in data or data['InternalName'] is None:
                         data['InternalName'] = data['Name'].upper()
                     data['UniqueID'] = f"{data['Name']}_{data['InternalName']}"  # Generate UniqueID
+
+                    self.process_abilities(data)
+
+                    # Check if InternalName is EEVEE and update Evolutions field
+                    if data.get('InternalName') == 'EEVEE':
+                        if 'Evolutions' in data:
+                            data['Evolutions'] += '(32)'
+                        else:
+                            data['Evolutions'] = '(32)'
+
                     self.all_data.append(data)
                     data = {}
             elif '=' in line:
@@ -93,6 +117,9 @@ class PokemonDataProcessor:
                 data['InternalName'] = data['Name'].upper()
             data['UniqueID'] = f"{data['Name']}_{data['InternalName']}"
 
+            self.process_abilities(data)
+
+            # Check if InternalName is EEVEE and update Evolutions field
             if data.get('InternalName') == 'EEVEE':
                 if 'Evolutions' in data:
                     data['Evolutions'] += '(32)'
@@ -101,6 +128,22 @@ class PokemonDataProcessor:
 
             self.all_data.append(data)
 
+    def process_abilities(self, data):
+        for column in ['Abilities', 'HiddenAbility']:
+            if column in data:
+                abilities_column = data[column]
+                if abilities_column:
+                    abilities = abilities_column.split(',')
+                    formatted_abilities = []
+                    for ability in abilities:
+                        ability_name = ability.strip()
+                        if ability_name in self.abilities:
+                            description = self.abilities[ability_name]
+                            formatted_ability = f"{ability_name} - \"{description}\""
+                            formatted_abilities.append(formatted_ability)
+                    data[column] = ', '.join(formatted_abilities)            
+
+    # Split and process encounters file into Python data dictionary 
     def process_locations_file(self):
         with open(self.locations_file, 'r') as file:
             lines = file.readlines()
@@ -122,6 +165,7 @@ class PokemonDataProcessor:
                         self.location_data[name] = []
                     self.location_data[name].append(location_entry)
 
+    # Add location data to pokemon names
     def add_location_data(self):
         for entry in self.all_data:
             name = entry.get('InternalName', '')
@@ -133,6 +177,7 @@ class PokemonDataProcessor:
         if 'Location Found' not in self.key_order:
             self.key_order.append('Location Found')
 
+    # Update the move columns with parsed move details
     def update_moves_columns(self, df):
         def update_column(cell, column_type):
             if pd.isna(cell):
@@ -148,7 +193,7 @@ class PokemonDataProcessor:
                     move = moves[i + 1].strip().upper()
                     if move == '':
                         i += 2
-                        continue
+                        continue  # Skip to the next iteration of the loop
                     
                     if move in self.move_parser.moves:
                         data = self.move_parser.moves[move]
@@ -161,7 +206,7 @@ class PokemonDataProcessor:
                 for move in moves:
                     move = move.strip().upper()
                     if move == '':
-                        continue
+                        continue  # Skip empty moves
                     
                     if move in self.move_parser.moves:
                         data = self.move_parser.moves[move]
@@ -176,9 +221,10 @@ class PokemonDataProcessor:
         
         return df
 
+    # Build Excel workbook
     def create_workbook(self):
         wb = Workbook()
-        
+
         def add_data_to_sheet(sheet_name, data, headers):
             if sheet_name in wb.sheetnames:
                 del wb[sheet_name]
@@ -187,7 +233,7 @@ class PokemonDataProcessor:
             for entry in data:
                 row = [entry.get(header, '') for header in headers]
                 ws.append(row)
-        
+
         main_headers = ['InternalName', 'Name'] + self.key_order if 'InternalName' not in self.key_order else self.key_order
         add_data_to_sheet("Main", self.all_data, main_headers)
         add_data_to_sheet("Poke Info", self.all_data, ['InternalName', 'Name'] + self.poke_info_tab)
@@ -195,22 +241,21 @@ class PokemonDataProcessor:
 
         moves_headers = ['InternalName', 'Moves', 'TutorMoves', 'EggMoves']
         moves_data = [{k: entry.get(k, '') for k in moves_headers} for entry in self.all_data]
-        
-        if "Moves" in wb.sheetnames:
-            wb.remove(wb["Moves"])
-        
+
         df_moves = pd.DataFrame(moves_data)
         df_moves = self.update_moves_columns(df_moves)
 
         with pd.ExcelWriter(self.output_file, engine='openpyxl', mode='w') as writer:
             writer.book = wb
             df_moves.to_excel(writer, sheet_name='Moves', index=False)
-        
+
         if 'Sheet' in wb.sheetnames:
             del wb['Sheet']
-        
+
         wb.save(self.output_file)
 
+
+    # Check if the Excel sheet exists and has all required columns
     def check_excel_sheet(self):
         if not os.path.exists(self.output_file):
             return False
@@ -229,6 +274,7 @@ class PokemonDataProcessor:
         except Exception as e:
             return False
     
+    # Check if the Excel sheet was created in the last 2 days
     def check_excel_creation_date(self):
         if os.path.exists(self.output_file):
             creation_time = datetime.datetime.fromtimestamp(os.path.getctime(self.output_file))
@@ -237,39 +283,43 @@ class PokemonDataProcessor:
                 return True
         return False
 
+    # Run all functions
     def run(self):
-        if self.check_excel_sheet() and self.check_excel_creation_date():
-            print("Excel sheet is up-to-date. No need to create a new one.")
-        else:
-            #print("Processing input file...")
+        #if self.check_excel_sheet() and self.check_excel_creation_date():
+            #pass
+        #else:
             self.process_input_file()
-            #print("Processing locations file...")
             self.process_locations_file()
-            #print("Adding location data...")
             self.add_location_data()
-            #print("Creating workbook...")
             self.create_workbook()
-            #print("Workbook created successfully.")
 
-# File paths (adjust these paths according to your setup)
-#base_dir = os.path.dirname(os.path.abspath(__file__))
+base_dir = os.path.dirname(os.path.abspath(__file__))
 
-workbook_path = os.path.join( 'PBS', 'pokemon.txt')
-encounter_path = os.path.join( 'PBS', 'encounters.txt')
-moves_path = os.path.join( 'PBS', 'moves.txt')
-output_file = os.path.join('pokedexCEL.xlsx')
+# Paths to the files
+workbook_path = os.path.join('PBS', 'pokemon.txt')
+encounter_path = os.path.join('PBS', 'encounters.txt')
+moves_path = os.path.join('PBS', 'moves.txt')
+abilities_path = os.path.join('PBS', 'abilities.txt')
 
-ignore_list = ['Description']
-key_order = ['Name', 'Type1', 'Type2', 'HP', 'Attack', 'Defense', 'SpAtk', 'SpDef', 'Spd', 'Abilities', 'HiddenAbility', 'Evolutions']
-moves_tab = ['Moves', 'TutorMoves', 'EggMoves']
-poke_info_tab = ['Name', 'InternalName', 'FormName', 'Type1', 'Type2', 'HP', 'Attack', 'Defense', 'SpAtk', 'SpDef', 'Spd', 'Abilities', 'HiddenAbility', 'Evolutions', 'Location Found', 'Evolution Line']
-misc_tab = ['Name', 'InternalName', 'FormName']
+# Configuration
+input_file = workbook_path
+locations_file = encounter_path
+moves_file = moves_path
+abilities_file = abilities_path
+output_file = 'pokedexCEL.xlsx'
+ignore_list = ['BaseExp', 'BattlerEnemyX', 'BattlerEnemyY', 'BattlerPlayerX', 'BattlerPlayerY', 'BattlerShadowSize', 'BattlerShadowX', 'CatchRate', 'Types', 'Category', 'EggGroups', 'HatchSteps', 'EVs', 'EffortPoints', 'HiddenAbilities']
+key_order = ['UniqueID', 'Name', 'InternalName', 'FormName', 'Type1', 'Type2', 'HP', 'Attack', 'Defense', 'SpAtk', 'SpDef', 'Spd', 'Abilities', 'HiddenAbility', 'Evolutions', 'Location Found']
+moves_tab = ['UniqueID', 'InternalName', 'Moves', 'TutorMoves', 'EggMoves']
+poke_info_tab = ['UniqueID', 'Generation', 'Height', 'Weight', 'Color', 'Pokedex', 'Shape', 'Kind', 'GrowthRate', 'GenderRate', 'GenderRatio', 'Habitat', 'BaseEXP', 'Rareness', 'Happiness', 'Compatibility', 'Incense']
+misc_tab = ['WildItemCommon', 'WildItemRare', 'WildItemUncommon', 'StepsToHatch']
 
 # Run the processor
-processor = PokemonDataProcessor(workbook_path, encounter_path, moves_path, output_file, ignore_list, key_order, moves_tab, poke_info_tab, misc_tab)
+processor = PokemonDataProcessor(input_file, locations_file, moves_file, output_file, abilities_file, ignore_list, key_order, moves_tab, poke_info_tab, misc_tab)
 
 def main():
     processor.run()
 
-#if __name__ == "__main__":
-    #main()
+if __name__ == "__main__":
+    main()
+    
+    

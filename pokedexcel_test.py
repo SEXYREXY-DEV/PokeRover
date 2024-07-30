@@ -223,11 +223,8 @@ class PokemonDataProcessor:
 
     # Build Excel workbook
     def create_workbook(self):
-        if os.path.exists(self.output_file):
-            wb = load_workbook(self.output_file)
-        else:
-            wb = Workbook()
-        
+        wb = Workbook()
+
         def add_data_to_sheet(sheet_name, data, headers):
             if sheet_name in wb.sheetnames:
                 del wb[sheet_name]
@@ -236,32 +233,27 @@ class PokemonDataProcessor:
             for entry in data:
                 row = [entry.get(header, '') for header in headers]
                 ws.append(row)
-        
-        # Build the different sheets based on orders below
+
         main_headers = ['InternalName', 'Name'] + self.key_order if 'InternalName' not in self.key_order else self.key_order
         add_data_to_sheet("Main", self.all_data, main_headers)
         add_data_to_sheet("Poke Info", self.all_data, ['InternalName', 'Name'] + self.poke_info_tab)
         add_data_to_sheet("Misc", self.all_data, ['InternalName', 'Name'] + self.misc_tab)
 
-        # Update the Moves sheet
         moves_headers = ['InternalName', 'Moves', 'TutorMoves', 'EggMoves']
         moves_data = [{k: entry.get(k, '') for k in moves_headers} for entry in self.all_data]
-        
-        if "Moves" in wb.sheetnames:
-            wb.remove(wb["Moves"])
-        
-        # Convert moves_data to DataFrame
+
         df_moves = pd.DataFrame(moves_data)
         df_moves = self.update_moves_columns(df_moves)
 
-        with pd.ExcelWriter(self.output_file, engine='openpyxl', mode='a') as writer:
+        with pd.ExcelWriter(self.output_file, engine='openpyxl', mode='w') as writer:
             writer.book = wb
             df_moves.to_excel(writer, sheet_name='Moves', index=False)
-        
+
         if 'Sheet' in wb.sheetnames:
             del wb['Sheet']
-        
+
         wb.save(self.output_file)
+
 
     # Check if the Excel sheet exists and has all required columns
     def check_excel_sheet(self):
@@ -327,5 +319,7 @@ processor = PokemonDataProcessor(input_file, locations_file, moves_file, output_
 def main():
     processor.run()
 
-#if __name__ == "__main__":
-    #main()
+if __name__ == "__main__":
+    main()
+    
+    
