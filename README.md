@@ -16,7 +16,7 @@ PokéRover is a Python-based application for browsing Pokémon essentials data. 
 ## HOW TO: Developers
 - For now, contact me on Discord @sexyrexy1212 for support, will have to walk your through using @PDM20's converter to make it work properly.
 
-## Examples
+## Use Examples
 ![extract_example](Pics/base_search.PNG)
 ![extract_example](Pics/dark_speed.PNG)
 ![extract_example](Pics/moves.PNG)
