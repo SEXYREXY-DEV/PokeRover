@@ -9,27 +9,32 @@ class MoveParser:
         self.filename = filename
         self.moves = self.parse_moves()
     
+    import re
+
     def parse_moves(self):
         with open(self.filename, 'r') as file:
             content = file.read()
 
         moves = {}
         move_blocks = content.split('#-------------------------------')
-        move_pattern = re.compile(r"\[(.*?)\](.*?)Name = (.*?)\nType = (.*?)\nCategory = (.*?)\nPower = (.*?)\nAccuracy = (.*?)\n", re.S)
+        move_pattern = re.compile(r"\[(.*?)\](.*?)Name = (.*?)\nType = (.*?)\nCategory = (.*?)\n(?:Power = (.*?)\n)?Accuracy = (.*?)\n", re.S)
 
         for block in move_blocks:
             match = move_pattern.search(block)
             if match:
                 move_code, _, name, move_type, category, power, accuracy = match.groups()
+                # If power is None (i.e., not captured), set it to 'N/A'
+                power = power.strip() if power else 'N/A'
                 moves[move_code.strip().upper()] = {
                     'Name': name.strip(),
                     'Type': move_type.strip(),
                     'Category': category.strip(),
-                    'Power': power.strip(),
+                    'Power': power,
                     'Accuracy': accuracy.strip(),
                 }
         
         return moves
+
 
 class PokemonDataProcessor:
     def __init__(self, input_file, locations_file, moves_file, output_file, abilities_file, ignore_list, key_order, moves_tab, poke_info_tab, misc_tab):
@@ -319,7 +324,7 @@ processor = PokemonDataProcessor(input_file, locations_file, moves_file, output_
 def main():
     processor.run()
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+    #main()
     
     
