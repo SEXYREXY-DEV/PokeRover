@@ -9,27 +9,32 @@ class MoveParser:
         self.filename = filename
         self.moves = self.parse_moves()
     
+    import re
+
     def parse_moves(self):
         with open(self.filename, 'r') as file:
             content = file.read()
 
         moves = {}
         move_blocks = content.split('#-------------------------------')
-        move_pattern = re.compile(r"\[(.*?)\](.*?)Name = (.*?)\nType = (.*?)\nCategory = (.*?)\nPower = (.*?)\nAccuracy = (.*?)\n", re.S)
+        move_pattern = re.compile(r"\[(.*?)\](.*?)Name = (.*?)\nType = (.*?)\nCategory = (.*?)\n(?:Power = (.*?)\n)?Accuracy = (.*?)\n", re.S)
 
         for block in move_blocks:
             match = move_pattern.search(block)
             if match:
                 move_code, _, name, move_type, category, power, accuracy = match.groups()
+                # If power is None (i.e., not captured), set it to 'N/A'
+                power = power.strip() if power else 'N/A'
                 moves[move_code.strip().upper()] = {
                     'Name': name.strip(),
                     'Type': move_type.strip(),
                     'Category': category.strip(),
-                    'Power': power.strip(),
+                    'Power': power,
                     'Accuracy': accuracy.strip(),
                 }
         
         return moves
+
 
 class PokemonDataProcessor:
     def __init__(self, input_file, locations_file, moves_file, output_file, abilities_file, ignore_list, key_order, moves_tab, poke_info_tab, misc_tab):
@@ -51,14 +56,19 @@ class PokemonDataProcessor:
     def retrieve_ability_descriptions(self):
         abilities = {}
         with open(self.abilities_file, 'r') as file:
+            current_ability = None
             for line in file:
-                parts = line.strip().split(',')
-                if len(parts) >= 4:
-                    ability_name = parts[1].strip()
-                    description = parts[3].strip().strip('"')
-                    abilities[ability_name] = description
-        
+                line = line.strip()
+                if line.startswith("[") and line.endswith("]"):  # Start of a new ability block
+                    current_ability = line[1:-1].strip().lower()  # Use the identifier as the key, normalized to lowercase
+                elif line.startswith("Description") and current_ability:
+                    description = line.split('=')[1].strip().strip('"')
+                    abilities[current_ability] = description  # Use the identifier as the key
+                    current_ability = None  # Reset for the next block
         return abilities
+
+
+
 
     def process_input_file(self):
         with open(self.input_file, 'r') as file:
@@ -136,13 +146,15 @@ class PokemonDataProcessor:
                     abilities = abilities_column.split(',')
                     formatted_abilities = []
                     for ability in abilities:
-                        ability_name = ability.strip()
-                        if ability_name in self.abilities:
+                        ability_name = ability.strip().lower()  # Normalize to lowercase
+                        if ability_name in self.abilities:  # Check against identifiers, not names
                             description = self.abilities[ability_name]
-                            formatted_ability = f"{ability_name} - \"{description}\""
+                            formatted_ability = f"{ability_name.capitalize()} - \"{description}\""  # Capitalize for display
                             formatted_abilities.append(formatted_ability)
-                    data[column] = ', '.join(formatted_abilities)            
+                    data[column] = ', '.join(formatted_abilities)
 
+
+          
     # Split and process encounters file into Python data dictionary 
     def process_locations_file(self):
         with open(self.locations_file, 'r') as file:
@@ -319,7 +331,7 @@ processor = PokemonDataProcessor(input_file, locations_file, moves_file, output_
 def main():
     processor.run()
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+    #main()
     
     
