@@ -2,23 +2,25 @@
 
 PokéRover is a Python-based application for browsing Pokémon essentials data. It allows users to search for Pokémon by name, view details about each Pokémon, and explore their moves, abilities, and other information.
 
-## For other games
+## HOW TO: Vanguard Players
 
-- For anyone who wants to use Pokerover for other fangames
-1. download it from the github like normal(could possibly need a converter mod depending on Essentials version, most devs will be able to tell so just ask your dev)
-2. find the PBS Files, relocate the PBS files
-3. overwrite the PBS in "dist/PokeRover/PBS" and run the .exe
+- Dowload and extract 'dist.zip', place it here ![extract_example](Pics/extracted.PNG) and your path should look like this. ![path_example](Pics/req_path.PNG)
+- As of right now, it is updated to patch 3.0.16. I will update this version whenever I update the PBS files. If you notice that the version is way off, have someone in the Vanguard server gen them for you. (Probably not required soon if ever)
 
-## HOW TO
- 
-Three possible ways to use PokeRover (in order of how I'd recommend to use it)
+## HOW TO: Players of other fan games
 
-1. Click __dist.zip__ and in the top right hit the three dots and then download. Place it in the same folder as the main game (same place as the picture below) and using whatever program you used to extract the main game to press '__extract here__' . DO NOT EXTRACT ANYWHERE ELSE, due to the nature of the program, it needs to have the file structure that is setup by default. If you extract to a new folder or anything like that, the app will not work.
+1. Dowload and extract 'dist.zip', place it here ![extract_example](Pics/extracted.PNG) and your path should look like this. ![path_example](Pics/req_path.PNG)
+2. Replace the PBS files 'abilities.txt' , 'encounters.txt', 'moves.txt', and 'pokemon.txt' with the other games files. All built in PBS files are from Vanguard.
+3. If you want megas or forms to work you will need a converted 'pokemon.txt' file as 'pokemon_forms.txt', which usually holds megas is not supported. Contact a dev of the game to reach out to me and we can sort it out.
 
-2. Clone or download the __distribution_folder__ , place it like this ![Folder Location](PokeRover_Pics/app_1.PNG) into the main folder of the game. After you place it there just find __PokeRover.exe__ that is inside of the __PokeRover__ folder within __distribution_folder__
+## HOW TO: Developers
+- For now, contact me on Discord @sexyrexy1212 for support, will have to walk your through using @PDM20's converter to make it work properly.
 
-3. Download the two Python scripts __pokedexcel.py__ and __pokemon_lookup.py__. In pokedexcel and lookup there might be some changes to paths that need to be made to run them but they should just run if they're in a folder within the main game folder. You will have to alter paths if they are free floating in the main game folder.
-
+## Use Examples
+![extract_example](Pics/base_search.PNG)
+![extract_example](Pics/dark_speed.PNG)
+![extract_example](Pics/moves.PNG)
+![extract_example](Pics/evos.PNG)
 ## Features
 
 - **Search**: Users can search for Pokémon by name using the search bar.
@@ -34,7 +36,7 @@ Once the application is running, follow these steps to use it:
 
 1. Enter the name of the Pokémon you want to search for in the search bar.
 2. Select the desired Pokémon from the search results.
-3. Explore the various tabs (Details, Moves, Poke Info, Miscellaneous) to learn more about the selected Pokémon.
+3. Explore the various tabs (Details, Moves, Poke Info, Miscellaneous, Evos) to learn more about the selected Pokémon. You can even click an evolution to switch to that page.
 4. Funny toggle between light and dark mode.
 
 ## Dependencies if using method two for using PokeRover
