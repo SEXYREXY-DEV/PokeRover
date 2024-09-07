@@ -7,6 +7,7 @@ import pandas as pd
 import pokedexcel
 import evos
 from text_methods import TextWrapper
+import winreg
 
 
 # Data class because apparently globals are bad practice :(
@@ -179,7 +180,7 @@ class PokemonApp(tk.Tk):
 
         # Support Frame
         self.creator_frame = tk.Frame(self.notebook, bg='white')
-        self.notebook.add(self.creator_frame, text='                    Support                    ')
+        self.notebook.add(self.creator_frame, text='                    Contact                    ')
         self.creator_label = tk.Label(self.creator_frame, text="https://github.com/SEXYREXY-DEV   //////   sexyrexy1212 on discord", justify='left', anchor='nw', bg='white', font=("Arial", 12))
         self.creator_label.pack(pady=10, padx=10, fill='both', expand=True)
         self.add_tyrantrum_image()
@@ -191,6 +192,28 @@ class PokemonApp(tk.Tk):
         self.sort_criteria_menu = ttk.Combobox(self, textvariable=self.sort_criteria_var, values=["Name", "HP", "Attack", "Defense", "SpAtk", "SpDef", "Spd"], font=("Arial", 12))
         self.sort_criteria_menu.place(x=10, y=40)
         self.sort_criteria_menu.bind("<<ComboboxSelected>>", lambda event: self.search_pokemon())
+
+        def is_windows_dark_mode(self):
+            try:
+            # Access the registry key where Windows stores theme preferences
+                registry_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Themes\Personalize')
+            
+            # Query the value of "AppsUseLightTheme" (0 for dark mode, 1 for light mode)
+                light_theme_value, _ = winreg.QueryValueEx(registry_key, 'AppsUseLightTheme')
+            
+            # Close the registry key
+                winreg.CloseKey(registry_key)
+            
+            # Check if dark mode is enabled and call toggle_mode if true
+                if light_theme_value == 1:  # 0 means dark mode
+                    self.toggle_mode()
+                else:
+                    print("Windows is in light mode.")
+            except FileNotFoundError:
+            # Return None if the registry key or value is not found (probably pre-Windows 10)
+                print("Theme settings not found (possibly not Windows 10 or higher).")
+                
+        is_windows_dark_mode(self)
 
     # Populate the dropdowns with stuff from the PBS files
     def populate_dropdowns(self):
@@ -404,10 +427,29 @@ class PokemonApp(tk.Tk):
             if image_type != 'Icon':
                 image_path = os.path.join(folder, f'{internal_name}.png')
                 image = Image.open(image_path)
-                image = image.resize((192, 192), Image.LANCZOS)
-                photo = ImageTk.PhotoImage(image)
-                self.image_label.config(image=photo)
-                self.image_label.image = photo
+                width = image.width
+                #if width != 80:
+                #    image = image.resize((192, 192), Image.LANCZOS)
+                #    photo = ImageTk.PhotoImage(image)
+                #    self.image_label.config(image=photo)
+                #    self.image_label.image = photo
+                #elif width == 80:
+                #    image = image.resize((160, 160), Image.LANCZOS)
+                #    photo = ImageTk.PhotoImage(image)
+                #    self.image_label.config(image=photo)
+                #    self.image_label.image = photo  
+                if width <= 150:
+                    image = image.resize((width*2, width*2), Image.LANCZOS)
+                    photo = ImageTk.PhotoImage(image)
+                    self.image_label.config(image=photo)
+                    self.image_label.image = photo
+                    print(width)
+                else:
+                    photo = ImageTk.PhotoImage(image)
+                    self.image_label.config(image=photo)
+                    self.image_label.image = photo
+                    print(width)
+                    
             else:
                 image_path = os.path.join(folder, f'{internal_name}.png')
                 image = Image.open(image_path)
@@ -415,8 +457,15 @@ class PokemonApp(tk.Tk):
                 photo = ImageTk.PhotoImage(image)
                 self.image_label.config(image=photo)
                 self.image_label.image = photo
-        except Exception as e:
-            messagebox.showerror("Image Error", f"Error loading image: {e}")
+        
+        except Exception:
+            image_path = os.path.join(folder, f'000.png')
+            image = Image.open(image_path)
+            image = image.resize((192, 192), Image.LANCZOS)
+            photo = ImageTk.PhotoImage(image)
+            self.image_label.config(image=photo)
+            self.image_label.image = photo
+            #messagebox.showerror("Image Error", f"Error loading image: {e}")
 
     # Part of updating on search (Probably could be its own class)
     def update_moveset(self):

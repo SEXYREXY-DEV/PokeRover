@@ -331,7 +331,7 @@ processor = PokemonDataProcessor(input_file, locations_file, moves_file, output_
 def main():
     processor.run()
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+    #main()
     
     
